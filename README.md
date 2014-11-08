@@ -8,6 +8,7 @@ Before you can work on the Core plugin, you must first have Paint.JAVA set up fo
 
 #### Setting up Paint.JAVA for development
 There are two options:
+
 1. If you are also developing the base framework, or are developing the plugin for an
 unreleased version, follow the instructions
 [here](https://github.com/PaintDotJava/Paint.JAVA#developing) to get Paint.JAVA setup
