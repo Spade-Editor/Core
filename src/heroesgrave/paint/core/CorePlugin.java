@@ -51,9 +51,9 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
 		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), null);
+		registrar.registerOperation(new FlipVertical("Flip Vertically"), 'V');
 		
 		registrar.registerEffect(new Invert("Invert Colour"), 'I');
-		registrar.registerEffect(new FlipVertical("Flip Vertically"), 'V');
 		registrar.registerEffect(new Greyscale("Greyscale"), 'G');
 		
 		registrar.registerSerialiser(LineChange.class);
