@@ -12,9 +12,13 @@ import heroesgrave.paint.core.changes.MaskRectChange;
 import heroesgrave.paint.core.changes.MoveChange;
 import heroesgrave.paint.core.changes.PixelChange;
 import heroesgrave.paint.core.changes.RectChange;
+import heroesgrave.paint.core.changes.ResizeCanvasChange;
+import heroesgrave.paint.core.changes.ResizeImageChange;
 import heroesgrave.paint.core.effects.FlipVertical;
 import heroesgrave.paint.core.effects.Greyscale;
 import heroesgrave.paint.core.effects.Invert;
+import heroesgrave.paint.core.ops.ResizeCanvasOp;
+import heroesgrave.paint.core.ops.ResizeImageOp;
 import heroesgrave.paint.core.tools.Eraser;
 import heroesgrave.paint.core.tools.FloodFill;
 import heroesgrave.paint.core.tools.Line;
@@ -25,24 +29,12 @@ import heroesgrave.paint.core.tools.Select;
 import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.plugin.Plugin;
 import heroesgrave.paint.plugin.Registrar;
-import heroesgrave.utils.misc.Metadata;
 
 public class CorePlugin extends Plugin
 {
 	public static void main(String[] args)
 	{
-		Plugin plugin = new CorePlugin();
-		Metadata info = new Metadata();
-		
-		info.set("name", "Core");
-		info.set("version", Paint.VERSION_STRING); // This will be inserted at compile time.
-		info.set("authors", "Paint.JAVA Developers");
-		info.set("updated", Paint.RELEASED); // This will be inserted at compile time.
-		info.set("description", "Official core plugin containing basic editing tools for Paint.JAVA");
-		info.set("min-paint-version", "0.14-Dev");
-		
-		plugin.setInfo(info);
-		Paint.launchWithPlugin(args, plugin);
+		Paint.launchWithPlugins(args, new CorePlugin());
 	}
 	
 	public void load()
@@ -60,6 +52,9 @@ public class CorePlugin extends Plugin
 		registrar.registerTool(new Eraser("Eraser"), 'E');
 		registrar.registerTool(new FloodFill("Paint Bucket"), 'F');
 		
+		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
+		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), 'C');
+		
 		registrar.registerEffect(new Invert("Invert Colour"), 'I');
 		registrar.registerEffect(new FlipVertical("Flip Vertically"), 'V');
 		registrar.registerEffect(new Greyscale("Greyscale"), 'G');
@@ -73,6 +68,8 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(MoveChange.class);
 		
 		registrar.registerSerialiser(FlipVertChange.class);
+		registrar.registerSerialiser(ResizeImageChange.class);
+		registrar.registerSerialiser(ResizeCanvasChange.class);
 		
 		registrar.registerSerialiser(InvertChange.class);
 		registrar.registerSerialiser(GreyscaleChange.class);

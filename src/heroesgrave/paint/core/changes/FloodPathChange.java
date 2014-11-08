@@ -82,7 +82,7 @@ public class FloodPathChange implements IEditChange
 		}
 	}
 	
-	// XXX: move to RawImage instance method
+	// TODO: move to RawImage instance method
 	// scan line flood fill as described in Wikipedia
 	private static void floodFill(RawImage image, int x, int y, int color)
 	{
