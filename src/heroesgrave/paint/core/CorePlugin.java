@@ -2,21 +2,8 @@ package heroesgrave.paint.core;
 
 import heroesgrave.paint.core.blend.AlphaTestReplace;
 import heroesgrave.paint.core.blend.Replace;
-import heroesgrave.paint.core.changes.FillRectChange;
-import heroesgrave.paint.core.changes.FlipVertChange;
-import heroesgrave.paint.core.changes.FloodPathChange;
-import heroesgrave.paint.core.changes.GreyscaleChange;
-import heroesgrave.paint.core.changes.InvertChange;
-import heroesgrave.paint.core.changes.LineChange;
-import heroesgrave.paint.core.changes.MaskRectChange;
-import heroesgrave.paint.core.changes.MoveChange;
-import heroesgrave.paint.core.changes.PixelChange;
-import heroesgrave.paint.core.changes.RectChange;
-import heroesgrave.paint.core.changes.ResizeCanvasChange;
-import heroesgrave.paint.core.changes.ResizeImageChange;
-import heroesgrave.paint.core.effects.FlipVertical;
-import heroesgrave.paint.core.effects.Greyscale;
-import heroesgrave.paint.core.effects.Invert;
+import heroesgrave.paint.core.changes.*;
+import heroesgrave.paint.core.effects.*;
 import heroesgrave.paint.core.ops.ResizeCanvasOp;
 import heroesgrave.paint.core.ops.ResizeImageOp;
 import heroesgrave.paint.core.tools.Eraser;
@@ -35,11 +22,13 @@ public class CorePlugin extends Plugin
 		launchPaintWithPlugins(args, new CorePlugin());
 	}
 	
+	@Override
 	public void load()
 	{
 		
 	}
 	
+	@Override
 	public void register(Registrar registrar)
 	{
 		registrar.registerTool(new Line("Line"), 'L');
@@ -55,6 +44,7 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerEffect(new Invert("Invert Colour"), 'I');
 		registrar.registerEffect(new Greyscale("Greyscale"), 'G');
+		registrar.registerEffect(new Sepia("Sepia"), 'S');
 		
 		registrar.registerSerialiser(LineChange.class);
 		registrar.registerSerialiser(FillRectChange.class);
@@ -70,6 +60,7 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerSerialiser(InvertChange.class);
 		registrar.registerSerialiser(GreyscaleChange.class);
+		registrar.registerSerialiser(SepiaChange.class);
 		
 		registrar.registerBlendMode(new Replace());
 		registrar.registerBlendMode(new AlphaTestReplace());
