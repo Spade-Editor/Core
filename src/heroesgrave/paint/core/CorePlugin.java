@@ -53,7 +53,7 @@ public class CorePlugin extends Plugin
 		registrar.registerTool(new FloodFill("Paint Bucket"), 'F');
 		
 		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
-		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), 'C');
+		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), null);
 		
 		registrar.registerEffect(new Invert("Invert Colour"), 'I');
 		registrar.registerEffect(new FlipVertical("Flip Vertically"), 'V');
