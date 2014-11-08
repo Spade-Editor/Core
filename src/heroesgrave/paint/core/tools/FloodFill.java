@@ -23,13 +23,13 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.core.changes.FloodPathChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.paint.image.change.edit.PathChange;
 
 import java.awt.Point;
 
 public class FloodFill extends Tool
 {
-	
-	private FloodPathChange path;
+	private PathChange path;
 	
 	public FloodFill(String name)
 	{
@@ -39,7 +39,7 @@ public class FloodFill extends Tool
 	@Override
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new FloodPathChange(new Point(x, y), getColour(button));
+		path = new PathChange(new Point(x, y), getColour(button), FloodPathChange.instance);
 		preview(path);
 	}
 	

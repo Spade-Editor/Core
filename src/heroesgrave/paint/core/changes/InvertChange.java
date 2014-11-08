@@ -22,22 +22,11 @@ package heroesgrave.paint.core.changes;
 
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IImageChange;
+import heroesgrave.paint.image.change.SingleChange;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-public class InvertChange extends IImageChange
+public class InvertChange extends SingleChange implements IImageChange
 {
-	@Override
-	public void write(DataOutputStream out) throws IOException
-	{
-	}
-	
-	@Override
-	public void read(DataInputStream in) throws IOException
-	{
-	}
+	public static final InvertChange instance = new InvertChange();
 	
 	@Override
 	public RawImage apply(RawImage image)
@@ -52,5 +41,11 @@ public class InvertChange extends IImageChange
 		}
 		
 		return image;
+	}
+	
+	@Override
+	public SingleChange getInstance()
+	{
+		return instance;
 	}
 }

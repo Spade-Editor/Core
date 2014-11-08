@@ -23,6 +23,7 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.edit.PathChange;
+import heroesgrave.paint.image.change.edit.DrawPathChange;
 
 public class Eraser extends Tool
 {
@@ -35,7 +36,7 @@ public class Eraser extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new PathChange(x, y, 0x00000000);
+		path = new PathChange(x, y, 0x00000000, DrawPathChange.instance);
 		preview(path);
 	}
 	

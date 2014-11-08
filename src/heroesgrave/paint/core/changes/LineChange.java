@@ -95,10 +95,4 @@ public class LineChange implements IEditChange, Serialised
 		ey = in.readShort();
 		c = in.readInt();
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

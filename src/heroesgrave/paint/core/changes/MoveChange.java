@@ -84,10 +84,4 @@ public class MoveChange implements IEditChange, IMaskChange, Serialised
 		dx = in.readShort();
 		dy = in.readShort();
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

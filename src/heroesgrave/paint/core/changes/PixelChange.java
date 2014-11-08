@@ -91,10 +91,4 @@ public class PixelChange implements IRevEditChange, Serialised
 		c = in.readInt();
 		o = in.readInt();
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

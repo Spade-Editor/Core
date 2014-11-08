@@ -21,70 +21,18 @@
 package heroesgrave.paint.core.changes;
 
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.image.change.IEditChange;
-import heroesgrave.paint.io.Serialised;
+import heroesgrave.paint.image.change.SingleChange;
+import heroesgrave.paint.image.change.edit.PathChange.IPathChange;
 
-import java.awt.Point;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 
-public class FloodPathChange implements IEditChange
+public class FloodPathChange extends IPathChange
 {
-	protected ArrayList<Point> points = new ArrayList<Point>();
-	protected int colour;
-	
-	public FloodPathChange(short x, short y, int colour)
-	{
-		this(new Point(x, y), colour);
-	}
-	
-	public FloodPathChange(Point p, int colour)
-	{
-		this.colour = colour;
-		points.add(p);
-	}
-	
-	public boolean moveTo(short x, short y)
-	{
-		return this.moveTo(new Point(x, y));
-	}
-	
-	public boolean moveTo(Point p)
-	{
-		if(points.get(points.size() - 1).equals(p))
-			return false;
-		points.add(p);
-		return true;
-	}
-	
-	@Override
-	public Serial encode()
-	{
-		short[] data = new short[points.size() * 2];
-		int i = 0;
-		for(Point p : points)
-		{
-			data[i++] = (short) p.x;
-			data[i++] = (short) p.y;
-		}
-		return new Serial(data, colour);
-	}
-	
-	@Override
-	public void apply(RawImage image)
-	{
-		for(Point p : points)
-		{
-			floodFill(image, p.x, p.y, colour);
-		}
-	}
+	public static final FloodPathChange instance = new FloodPathChange();
 	
 	// TODO: move to RawImage instance method
 	// scan line flood fill as described in Wikipedia
-	private static void floodFill(RawImage image, int x, int y, int color)
+	public void point(RawImage image, int x, int y, int color)
 	{
 		final int iw = image.width;
 		
@@ -150,53 +98,15 @@ public class FloodPathChange implements IEditChange
 		}
 	}
 	
-	public static class Serial implements Serialised
+	@Override
+	public void line(RawImage image, int x1, int y1, int x2, int y2, int colour)
 	{
-		private short[] points;
-		private int colour;
-		
-		public Serial()
-		{
-			
-		}
-		
-		public Serial(short[] data, int colour)
-		{
-			this.colour = colour;
-			this.points = data;
-		}
-		
-		@Override
-		public FloodPathChange decode()
-		{
-			FloodPathChange change = new FloodPathChange(points[0], points[1], colour);
-			for(int i = 2; i < points.length; i += 2)
-				change.moveTo(points[i], points[i + 1]);
-			return change;
-		}
-		
-		@Override
-		public void write(DataOutputStream out) throws IOException
-		{
-			out.writeInt(colour);
-			out.writeInt(points.length);
-			for(short s : points)
-				out.writeShort(s);
-		}
-		
-		@Override
-		public void read(DataInputStream in) throws IOException
-		{
-			colour = in.readInt();
-			points = new short[in.readInt()];
-			for(int i = 0; i < points.length; i++)
-				points[i] = in.readShort();
-		}
-		
-		@Override
-		public boolean isMarker()
-		{
-			return false;
-		}
+		// XXX: Do we want to fill all along the path?
+	}
+	
+	@Override
+	public SingleChange getInstance()
+	{
+		return instance;
 	}
 }

@@ -23,22 +23,11 @@ package heroesgrave.paint.core.changes;
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.IMaskChange;
+import heroesgrave.paint.image.change.SingleChange;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-public class FlipVertChange extends IImageChange implements IMaskChange
+public class FlipVertChange extends SingleChange implements IImageChange, IMaskChange
 {
-	@Override
-	public void write(DataOutputStream out) throws IOException
-	{
-	}
-	
-	@Override
-	public void read(DataInputStream in) throws IOException
-	{
-	}
+	public static final FlipVertChange instance = new FlipVertChange();
 	
 	@Override
 	public RawImage apply(RawImage image)
@@ -91,5 +80,11 @@ public class FlipVertChange extends IImageChange implements IMaskChange
 			
 			return newImage;
 		}
+	}
+	
+	@Override
+	public SingleChange getInstance()
+	{
+		return instance;
 	}
 }

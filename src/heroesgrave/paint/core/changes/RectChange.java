@@ -93,10 +93,4 @@ public class RectChange implements IEditChange, Serialised
 		y2 = in.readShort();
 		colour = in.readInt();
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }

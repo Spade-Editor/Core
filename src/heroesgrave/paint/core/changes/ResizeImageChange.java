@@ -2,12 +2,13 @@ package heroesgrave.paint.core.changes;
 
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IResizingChange;
+import heroesgrave.paint.image.change.SerialisedChange;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ResizeImageChange extends IResizingChange
+public class ResizeImageChange extends SerialisedChange implements IResizingChange
 {
 	private short width, height;
 	

@@ -104,10 +104,4 @@ public class MaskRectChange implements IEditChange, IMaskChange, Serialised
 		x2 = in.readShort();
 		y2 = in.readShort();
 	}
-	
-	@Override
-	public boolean isMarker()
-	{
-		return false;
-	}
 }
