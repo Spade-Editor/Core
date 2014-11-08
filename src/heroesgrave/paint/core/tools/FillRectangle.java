@@ -23,7 +23,6 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.core.changes.FillRectChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.main.Paint;
 
 public class FillRectangle extends Tool
 {
@@ -36,18 +35,19 @@ public class FillRectangle extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		rect = new FillRectChange(x, y, x, y, Paint.main.getColor(button));
+		rect = new FillRectChange(x, y, x, y, getColour(button));
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
 		layer.addChange(rect);
-		Paint.main.gui.repaint();
+		repaint();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		rect.moveTo(x, y);
+		if(rect.moveTo(x, y))
+			repaint();
 	}
 }

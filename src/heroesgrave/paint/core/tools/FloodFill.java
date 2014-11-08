@@ -20,41 +20,40 @@
 
 package heroesgrave.paint.core.tools;
 
-import java.awt.Point;
-
 import heroesgrave.paint.core.changes.FloodPathChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.main.Paint;
+
+import java.awt.Point;
 
 public class FloodFill extends Tool
 {
-
+	
 	private FloodPathChange path;
 	
 	public FloodFill(String name)
 	{
 		super(name);
 	}
-
+	
 	@Override
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new FloodPathChange(new Point(x, y), Paint.main.getColor(button));
-		Paint.getDocument().preview(path);
+		path = new FloodPathChange(new Point(x, y), getColour(button));
+		preview(path);
 	}
-
+	
 	@Override
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().applyPreview();
+		applyPreview();
 		path = null;
 	}
-
+	
 	@Override
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
 		if(path.moveTo(x, y))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }

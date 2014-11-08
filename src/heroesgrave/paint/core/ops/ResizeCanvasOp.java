@@ -4,7 +4,6 @@ import heroesgrave.paint.core.changes.ResizeCanvasChange;
 import heroesgrave.paint.editing.Effect;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.doc.DocResize;
-import heroesgrave.paint.main.Paint;
 import heroesgrave.utils.misc.DialogWrapper;
 import heroesgrave.utils.misc.NumberFilter;
 
@@ -31,7 +30,7 @@ public class ResizeCanvasOp extends Effect
 	@Override
 	public void perform(final Layer layer)
 	{
-		DialogWrapper _dialog = new DialogWrapper(Paint.main.gui.frame, "Resize Canvas");
+		DialogWrapper _dialog = new DialogWrapper("Resize Canvas");
 		final JDialog dialog = _dialog.dialog;
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		
@@ -87,7 +86,7 @@ public class ResizeCanvasOp extends Effect
 		dialog.pack();
 		dialog.setResizable(false);
 		dialog.setVisible(true);
-		_dialog.centre(Paint.main.gui.frame);
+		_dialog.centre();
 	}
 	
 	public void resize(Layer layer, int w, int h)

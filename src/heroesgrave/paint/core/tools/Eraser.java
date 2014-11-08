@@ -23,7 +23,6 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.edit.PathChange;
-import heroesgrave.paint.main.Paint;
 
 public class Eraser extends Tool
 {
@@ -37,18 +36,18 @@ public class Eraser extends Tool
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		path = new PathChange(x, y, 0x00000000);
-		Paint.getDocument().preview(path);
+		preview(path);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().applyPreview();
+		applyPreview();
 		path = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
 		if(path.moveTo(x, y))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }

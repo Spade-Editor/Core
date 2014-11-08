@@ -23,10 +23,8 @@ import heroesgrave.paint.core.tools.Eraser;
 import heroesgrave.paint.core.tools.FloodFill;
 import heroesgrave.paint.core.tools.Line;
 import heroesgrave.paint.core.tools.Move;
-import heroesgrave.paint.core.tools.Picker;
 import heroesgrave.paint.core.tools.Rectangle;
 import heroesgrave.paint.core.tools.Select;
-import heroesgrave.paint.main.Paint;
 import heroesgrave.paint.plugin.Plugin;
 import heroesgrave.paint.plugin.Registrar;
 
@@ -34,7 +32,7 @@ public class CorePlugin extends Plugin
 {
 	public static void main(String[] args)
 	{
-		Paint.launchWithPlugins(args, new CorePlugin());
+		launchPaintWithPlugins(args, new CorePlugin());
 	}
 	
 	public void load()
@@ -44,7 +42,6 @@ public class CorePlugin extends Plugin
 	
 	public void register(Registrar registrar)
 	{
-		registrar.registerTool(new Picker("Colour Picker"), 'K');
 		registrar.registerTool(new Line("Line"), 'L');
 		registrar.registerTool(new Rectangle("Rectangle"), 'R');
 		registrar.registerTool(new Select("Select"), 'S');

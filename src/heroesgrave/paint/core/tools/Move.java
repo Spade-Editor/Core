@@ -23,7 +23,6 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.core.changes.MoveChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.main.Paint;
 
 public class Move extends Tool
 {
@@ -40,14 +39,14 @@ public class Move extends Tool
 		sx = x;
 		sy = y;
 		change = new MoveChange((short) 0, (short) 0);
-		Paint.getDocument().preview(change);
+		preview(change);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
 		change.dx = (short) (x - sx);
 		change.dy = (short) (y - sy);
-		Paint.getDocument().applyPreview();
+		applyPreview();
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
@@ -55,6 +54,6 @@ public class Move extends Tool
 		short dx = (short) (x - sx);
 		short dy = (short) (y - sy);
 		if(change.moved(dx, dy))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }

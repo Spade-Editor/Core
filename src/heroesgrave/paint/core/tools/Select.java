@@ -25,8 +25,6 @@ import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage.MaskMode;
-import heroesgrave.paint.main.Input;
-import heroesgrave.paint.main.Paint;
 
 public class Select extends Tool implements SelectionTool
 {
@@ -40,18 +38,18 @@ public class Select extends Tool implements SelectionTool
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		MaskMode mode;
-		if(Input.CTRL)
+		if(isCtrlDown())
 		{
-			if(Input.ALT)
+			if(isAltDown())
 				mode = MaskMode.XOR;
 			else
 				mode = MaskMode.ADD;
 		}
-		else if(Input.ALT)
+		else if(isAltDown())
 		{
 			mode = MaskMode.SUB;
 		}
-		else if(Input.SHIFT)
+		else if(isShiftDown())
 		{
 			mode = MaskMode.AND;
 		}
@@ -60,18 +58,18 @@ public class Select extends Tool implements SelectionTool
 			mode = MaskMode.REP;
 		}
 		rect = new MaskRectChange(x, y, x, y, mode);
-		Paint.getDocument().preview(rect);
+		preview(rect);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().applyPreview();
+		applyPreview();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
 		if(rect.moveTo(x, y))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }

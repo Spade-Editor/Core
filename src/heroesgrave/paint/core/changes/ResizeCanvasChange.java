@@ -1,13 +1,13 @@
 package heroesgrave.paint.core.changes;
 
 import heroesgrave.paint.image.RawImage;
-import heroesgrave.paint.image.change.edit.ResizingChange;
+import heroesgrave.paint.image.change.IResizingChange;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ResizeCanvasChange extends ResizingChange
+public class ResizeCanvasChange extends IResizingChange
 {
 	private short width, height;
 	

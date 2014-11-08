@@ -23,7 +23,6 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.core.changes.RectChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
-import heroesgrave.paint.main.Paint;
 
 public class Rectangle extends Tool
 {
@@ -36,19 +35,19 @@ public class Rectangle extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		rect = new RectChange(x, y, x, y, Paint.main.getColor(button));
-		Paint.getDocument().preview(rect);
+		rect = new RectChange(x, y, x, y, getColour(button));
+		preview(rect);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		Paint.getDocument().applyPreview();
+		applyPreview();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
 		if(rect.moveTo(x, y))
-			Paint.getDocument().repaint();
+			repaint();
 	}
 }
