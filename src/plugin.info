@@ -1,0 +1,11 @@
+main : heroesgrave.paint.core.CorePlugin
+
+name : Core
+authors : Paint.JAVA Developers
+
+version : 0.14-Dev
+updated : 08-11-2014
+
+min-paint-version : 0.14-Dev
+
+description : Official core plugin containing basic editing tools for Paint.JAVA

@@ -1,0 +1,22 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Eclipse #
+.classpath
+.project
+.settings/*
+/bin
+
+# Other #
+/etc
+/doc
+/plugins
+/test
+*.sh
+*.directory
+.license
+export.jardesc
