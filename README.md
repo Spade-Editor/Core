@@ -4,7 +4,7 @@ Official core plugin containing basic editing tools for Paint.JAVA
 
 ## Developing
 
-Before you
+Before you can work on the Core plugin, you must first have Paint.JAVA set up for development.
 
 #### Setting up Paint.JAVA for development
 There are two options:
