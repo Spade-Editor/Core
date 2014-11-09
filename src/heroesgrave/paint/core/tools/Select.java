@@ -25,6 +25,7 @@ import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage.MaskMode;
+import heroesgrave.utils.math.MathUtils;
 
 public class Select extends Tool implements SelectionTool
 {
@@ -63,12 +64,33 @@ public class Select extends Tool implements SelectionTool
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
+		if(isCtrlDown())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
+		rect.moveTo(x, y);
 		applyPreview();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
+		if(isCtrlDown())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
 		if(rect.moveTo(x, y))
 			repaint();
 	}

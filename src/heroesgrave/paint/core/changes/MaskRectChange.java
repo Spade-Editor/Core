@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class MaskRectChange implements IEditChange, IMaskChange, Serialised
 {
-	private short x1, y1, x2, y2;
+	public short x1, y1, x2, y2;
 	private MaskMode mode;
 	
 	public MaskRectChange()

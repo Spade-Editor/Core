@@ -31,6 +31,7 @@ public class InvertChange extends SingleChange implements IImageChange
 	@Override
 	public RawImage apply(RawImage image)
 	{
+		System.out.println("a");
 		int[] buffer = image.borrowBuffer();
 		boolean[] mask = image.borrowMask();
 		

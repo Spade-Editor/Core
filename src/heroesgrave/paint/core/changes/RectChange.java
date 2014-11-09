@@ -22,13 +22,14 @@ package heroesgrave.paint.core.changes;
 
 import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IEditChange;
+import heroesgrave.paint.image.change.SerialisedChange;
 import heroesgrave.paint.io.Serialised;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class RectChange implements IEditChange, Serialised
+public class RectChange extends SerialisedChange implements IEditChange, Serialised
 {
 	public short x1, y1, x2, y2;
 	public int colour;
@@ -60,18 +61,6 @@ public class RectChange implements IEditChange, Serialised
 	public void apply(RawImage image)
 	{
 		image.drawRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), colour);
-	}
-	
-	@Override
-	public RectChange encode()
-	{
-		return this;
-	}
-	
-	@Override
-	public RectChange decode()
-	{
-		return this;
 	}
 	
 	@Override

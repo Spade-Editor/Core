@@ -44,8 +44,24 @@ public class Move extends Tool
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		change.dx = (short) (x - sx);
-		change.dy = (short) (y - sy);
+		if(isCtrlDown())
+		{
+			change.dx = (short) (x - sx);
+			change.dy = (short) (y - sy);
+			if(Math.abs(change.dx) > Math.abs(change.dy))
+			{
+				change.dy = 0;
+			}
+			else
+			{
+				change.dx = 0;
+			}
+		}
+		else
+		{
+			change.dx = (short) (x - sx);
+			change.dy = (short) (y - sy);
+		}
 		applyPreview();
 	}
 	
@@ -53,6 +69,17 @@ public class Move extends Tool
 	{
 		short dx = (short) (x - sx);
 		short dy = (short) (y - sy);
+		if(isCtrlDown())
+		{
+			if(Math.abs(dx) > Math.abs(dy))
+			{
+				dy = 0;
+			}
+			else
+			{
+				dx = 0;
+			}
+		}
 		if(change.moved(dx, dy))
 			repaint();
 	}

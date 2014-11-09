@@ -20,9 +20,11 @@
 
 package heroesgrave.paint.core.tools;
 
+import heroesgrave.paint.core.changes.FillRectChange;
 import heroesgrave.paint.core.changes.RectChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.utils.math.MathUtils;
 
 public class Rectangle extends Tool
 {
@@ -35,18 +37,42 @@ public class Rectangle extends Tool
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		rect = new RectChange(x, y, x, y, getColour(button));
+		if(isShiftDown())
+			rect = new FillRectChange(x, y, x, y, getColour(button));
+		else
+			rect = new RectChange(x, y, x, y, getColour(button));
 		preview(rect);
 	}
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
+		if(isCtrlDown())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
+		rect.moveTo(x, y);
 		applyPreview();
 		rect = null;
 	}
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
+		if(isCtrlDown())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
 		if(rect.moveTo(x, y))
 			repaint();
 	}

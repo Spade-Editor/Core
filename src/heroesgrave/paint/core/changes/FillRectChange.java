@@ -24,15 +24,8 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IEditChange;
 import heroesgrave.paint.io.Serialised;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-public class FillRectChange implements IEditChange, Serialised
+public class FillRectChange extends RectChange implements IEditChange, Serialised
 {
-	private short x1, y1, x2, y2;
-	private int colour;
-	
 	public FillRectChange()
 	{
 		
@@ -40,57 +33,12 @@ public class FillRectChange implements IEditChange, Serialised
 	
 	public FillRectChange(short x1, short y1, short x2, short y2, int colour)
 	{
-		this.colour = colour;
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-	}
-	
-	public boolean moveTo(short x, short y)
-	{
-		if(x2 == x && y2 == y)
-			return false;
-		this.x2 = x;
-		this.y2 = y;
-		return true;
+		super(x1, y1, x2, y2, colour);
 	}
 	
 	@Override
 	public void apply(RawImage image)
 	{
 		image.fillRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), colour);
-	}
-	
-	@Override
-	public FillRectChange encode()
-	{
-		return this;
-	}
-	
-	@Override
-	public FillRectChange decode()
-	{
-		return this;
-	}
-	
-	@Override
-	public void write(DataOutputStream out) throws IOException
-	{
-		out.writeShort(x1);
-		out.writeShort(y1);
-		out.writeShort(x2);
-		out.writeShort(y2);
-		out.writeInt(colour);
-	}
-	
-	@Override
-	public void read(DataInputStream in) throws IOException
-	{
-		x1 = in.readShort();
-		y1 = in.readShort();
-		x2 = in.readShort();
-		y2 = in.readShort();
-		colour = in.readInt();
 	}
 }

@@ -56,11 +56,11 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerEffect(new SimpleEffect("Invert Colour", InvertChange.instance), 'I');
 		registrar.registerEffect(new SimpleEffect("Greyscale", GreyscaleChange.instance), 'G');
-		registrar.registerEffect(new SimpleEffect("Sepia", SepiaChange.instance), 'S');
+		registrar.registerEffect(new SimpleEffect("Sepia", SepiaChange.instance), null);
 		
 		registrar.registerSerialiser(LineChange.class);
-		registrar.registerSerialiser(FillRectChange.class);
 		registrar.registerSerialiser(RectChange.class);
+		registrar.registerSerialiser(FillRectChange.class);
 		registrar.registerSerialiser(FloodPathChange.class);
 		registrar.registerSerialiser(PixelChange.class);
 		registrar.registerSerialiser(MaskRectChange.class);

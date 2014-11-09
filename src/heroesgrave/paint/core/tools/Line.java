@@ -23,6 +23,7 @@ package heroesgrave.paint.core.tools;
 import heroesgrave.paint.core.changes.LineChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
+import heroesgrave.utils.math.MathUtils;
 
 public class Line extends Tool
 {
@@ -47,6 +48,32 @@ public class Line extends Tool
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
+		if(isCtrlDown())
+		{
+			int dx = x - line.sx;
+			int dy = y - line.sy;
+			int adx = Math.abs(dx);
+			int ady = Math.abs(dy);
+			if(adx > ady * 2)
+			{
+				// X axis
+				dy = 0;
+			}
+			else if(ady > adx * 2)
+			{
+				// Y axis
+				dx = 0;
+			}
+			else
+			{
+				// Diagonal
+				int mag = Math.max(adx, ady);
+				dy = MathUtils.sign(dy) * mag;
+				dx = MathUtils.sign(dx) * mag;
+			}
+			x = (short) (line.sx + dx);
+			y = (short) (line.sy + dy);
+		}
 		if(line.end(x, y))
 			repaint();
 	}

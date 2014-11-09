@@ -34,7 +34,7 @@ import java.io.IOException;
  */
 public class LineChange implements IEditChange, Serialised
 {
-	private short sx, sy, ex, ey;
+	public short sx, sy, ex, ey;
 	private int c;
 	
 	public LineChange()
