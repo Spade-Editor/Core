@@ -15,6 +15,8 @@ import heroesgrave.paint.core.changes.RectChange;
 import heroesgrave.paint.core.changes.ResizeCanvasChange;
 import heroesgrave.paint.core.changes.ResizeImageChange;
 import heroesgrave.paint.core.changes.SepiaChange;
+import heroesgrave.paint.core.exporters.ExporterJPEG;
+import heroesgrave.paint.core.exporters.ExporterTGA;
 import heroesgrave.paint.core.ops.ResizeCanvasOp;
 import heroesgrave.paint.core.ops.ResizeImageOp;
 import heroesgrave.paint.core.tools.Eraser;
@@ -24,6 +26,7 @@ import heroesgrave.paint.core.tools.Move;
 import heroesgrave.paint.core.tools.Rectangle;
 import heroesgrave.paint.core.tools.Select;
 import heroesgrave.paint.editing.SimpleEffect;
+import heroesgrave.paint.io.exporters.ExporterGenericImageIO;
 import heroesgrave.paint.plugin.Plugin;
 import heroesgrave.paint.plugin.Registrar;
 
@@ -31,7 +34,7 @@ public class CorePlugin extends Plugin
 {
 	public static void main(String[] args)
 	{
-		launchPaintWithPlugins(args, new CorePlugin());
+		launchPaintWithPlugins(args, false, new CorePlugin());
 	}
 	
 	@Override
@@ -76,5 +79,10 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerBlendMode(new Replace());
 		registrar.registerBlendMode(new AlphaTestReplace());
+		
+		registrar.registerExporter(new ExporterGenericImageIO("bmp", "BMP - Microsoft Bitmap Image"));
+		registrar.registerExporter(new ExporterGenericImageIO("gif", "GIF - Graphics Interchange Format"));
+		registrar.registerExporter(new ExporterJPEG());
+		registrar.registerExporter(new ExporterTGA());
 	}
 }
