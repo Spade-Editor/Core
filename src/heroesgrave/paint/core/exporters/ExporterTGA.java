@@ -20,7 +20,7 @@
 
 package heroesgrave.paint.core.exporters;
 
-import heroesgrave.paint.gui.SimpleModalProgressDialog;
+import heroesgrave.paint.gui.ProgressDialog;
 import heroesgrave.paint.image.Document;
 import heroesgrave.paint.io.ImageExporter;
 
@@ -77,8 +77,8 @@ public class ExporterTGA extends ImageExporter
 		
 		// Write out the image data
 		int c;
-		SimpleModalProgressDialog DIALOG =
-				new SimpleModalProgressDialog("Saving...", "Saving Image...", buf.length + 1);
+		ProgressDialog DIALOG =
+				new ProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		
 		for(int y = image.getHeight() - 1, count = 0; y >= 0; y--)
 		{

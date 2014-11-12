@@ -20,10 +20,10 @@
 
 package heroesgrave.paint.core.ops;
 
-import heroesgrave.paint.core.changes.ResizeCanvasChange;
 import heroesgrave.paint.editing.Effect;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.doc.DocResize;
+import heroesgrave.paint.image.change.edit.ResizeCanvasChange;
 import heroesgrave.utils.misc.DialogWrapper;
 import heroesgrave.utils.misc.NumberFilter;
 

@@ -32,7 +32,6 @@ import heroesgrave.paint.core.changes.MaskRectChange;
 import heroesgrave.paint.core.changes.MoveChange;
 import heroesgrave.paint.core.changes.PixelChange;
 import heroesgrave.paint.core.changes.RectChange;
-import heroesgrave.paint.core.changes.ResizeCanvasChange;
 import heroesgrave.paint.core.changes.ResizeImageChange;
 import heroesgrave.paint.core.changes.SepiaChange;
 import heroesgrave.paint.core.exporters.ExporterJPEG;
@@ -91,7 +90,6 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerSerialiser(FlipVertChange.class);
 		registrar.registerSerialiser(ResizeImageChange.class);
-		registrar.registerSerialiser(ResizeCanvasChange.class);
 		
 		registrar.registerSerialiser(InvertChange.class);
 		registrar.registerSerialiser(GreyscaleChange.class);
