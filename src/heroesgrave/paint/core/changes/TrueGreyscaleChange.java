@@ -24,9 +24,9 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.IImageChange;
 import heroesgrave.paint.image.change.SingleChange;
 
-public class GreyscaleChange extends SingleChange implements IImageChange
+public class TrueGreyscaleChange extends SingleChange implements IImageChange
 {
-	public static final GreyscaleChange instance = new GreyscaleChange();
+	public static final TrueGreyscaleChange instance = new TrueGreyscaleChange();
 	
 	@Override
 	public RawImage apply(RawImage image)
@@ -43,7 +43,7 @@ public class GreyscaleChange extends SingleChange implements IImageChange
 				int g = (c >> 8) & 0xFF;
 				int b = (c) & 0xFF;
 				
-				int l = (int) (r / 3f + g / 3f + b / 3f) & 0xFF;
+				int l = (int) (0.2126f * r + 0.7152f * g + 0.0722f * b) & 0xFF;
 				buffer[i] = (c & 0xFF000000) | l << 16 | l << 8 | l;
 			}
 		}

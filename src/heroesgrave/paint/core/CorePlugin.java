@@ -35,6 +35,7 @@ import heroesgrave.paint.core.changes.PixelChange;
 import heroesgrave.paint.core.changes.RectChange;
 import heroesgrave.paint.core.changes.ResizeImageChange;
 import heroesgrave.paint.core.changes.SepiaChange;
+import heroesgrave.paint.core.changes.TrueGreyscaleChange;
 import heroesgrave.paint.core.exporters.ExporterJPEG;
 import heroesgrave.paint.core.exporters.ExporterTGA;
 import heroesgrave.paint.core.ops.ResizeCanvasOp;
@@ -80,6 +81,7 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerEffect(new SimpleEffect("Invert Colour", InvertChange.instance), 'I');
 		registrar.registerEffect(new SimpleEffect("Greyscale", GreyscaleChange.instance), 'G');
+		registrar.registerEffect(new SimpleEffect("True Greyscale", TrueGreyscaleChange.instance), null); // Most of the time linear greyscale is preferred.
 		registrar.registerEffect(new SimpleEffect("Sepia", SepiaChange.instance), null);
 		
 		registrar.registerSerialiser(LineChange.class);
@@ -95,7 +97,7 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(ResizeImageChange.class);
 		
 		registrar.registerSerialiser(InvertChange.class);
-		registrar.registerSerialiser(GreyscaleChange.class);
+		registrar.registerSerialiser(TrueGreyscaleChange.class);
 		registrar.registerSerialiser(SepiaChange.class);
 		
 		registrar.registerBlendMode(new Replace());
