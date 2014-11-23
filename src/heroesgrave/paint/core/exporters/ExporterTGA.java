@@ -45,7 +45,7 @@ public class ExporterTGA extends ImageExporter
 	}
 	
 	@Override
-	public void export(Document doc, File destination) throws IOException
+	public void save(Document doc, File destination) throws IOException
 	{
 		BufferedImage image = doc.getRenderedImage();
 		
@@ -77,8 +77,7 @@ public class ExporterTGA extends ImageExporter
 		
 		// Write out the image data
 		int c;
-		ProgressDialog DIALOG =
-				new ProgressDialog("Saving...", "Saving Image...", buf.length + 1);
+		ProgressDialog DIALOG = new ProgressDialog("Saving...", "Saving Image...", buf.length + 1);
 		
 		for(int y = image.getHeight() - 1, count = 0; y >= 0; y--)
 		{
@@ -110,7 +109,7 @@ public class ExporterTGA extends ImageExporter
 	}
 	
 	@Override
-	public String getFileExtensionDescription()
+	public String getDescription()
 	{
 		return "TGA - Tagged Image File Format";
 	}

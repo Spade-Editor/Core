@@ -54,15 +54,14 @@ public class ExporterJPEG extends ImageExporter
 	}
 	
 	@Override
-	public String getFileExtensionDescription()
+	public String getDescription()
 	{
 		return "JPEG - JPEG File Interchange Format";
 	}
 	
 	@Override
-	public void export(Document doc, File destination) throws IOException
+	public void save(Document doc, File destination) throws IOException
 	{
 		writeImage(clean(doc.getRenderedImage()), getFileExtension().toUpperCase(), destination.getAbsolutePath());
 	}
-	
 }
