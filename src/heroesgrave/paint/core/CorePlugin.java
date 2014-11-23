@@ -23,6 +23,7 @@ package heroesgrave.paint.core;
 import heroesgrave.paint.core.blend.AlphaTestReplace;
 import heroesgrave.paint.core.blend.Replace;
 import heroesgrave.paint.core.changes.FillRectChange;
+import heroesgrave.paint.core.changes.FlipHorizChange;
 import heroesgrave.paint.core.changes.FlipVertChange;
 import heroesgrave.paint.core.changes.FloodPathChange;
 import heroesgrave.paint.core.changes.GreyscaleChange;
@@ -75,6 +76,7 @@ public class CorePlugin extends Plugin
 		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
 		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), null);
 		registrar.registerOperation(new SimpleEffect("Flip Vertically", FlipVertChange.instance), 'V');
+		registrar.registerOperation(new SimpleEffect("Flip Horizontally", FlipHorizChange.instance), 'H');
 		
 		registrar.registerEffect(new SimpleEffect("Invert Colour", InvertChange.instance), 'I');
 		registrar.registerEffect(new SimpleEffect("Greyscale", GreyscaleChange.instance), 'G');
@@ -89,6 +91,7 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(MoveChange.class);
 		
 		registrar.registerSerialiser(FlipVertChange.class);
+		registrar.registerSerialiser(FlipHorizChange.class);
 		registrar.registerSerialiser(ResizeImageChange.class);
 		
 		registrar.registerSerialiser(InvertChange.class);
