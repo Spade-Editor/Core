@@ -76,13 +76,13 @@ public class CorePlugin extends Plugin
 		
 		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
 		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), null);
-		registrar.registerOperation(new SimpleEffect("Flip Vertically", FlipVertChange.instance), 'V');
-		registrar.registerOperation(new SimpleEffect("Flip Horizontally", FlipHorizChange.instance), 'H');
+		registrar.registerOperation(new SimpleEffect(CorePlugin.class, "Flip Vertically", FlipVertChange.instance), 'V');
+		registrar.registerOperation(new SimpleEffect(CorePlugin.class, "Flip Horizontally", FlipHorizChange.instance), 'H');
 		
-		registrar.registerEffect(new SimpleEffect("Invert Colour", InvertChange.instance), 'I');
-		registrar.registerEffect(new SimpleEffect("Greyscale", GreyscaleChange.instance), 'G');
-		registrar.registerEffect(new SimpleEffect("True Greyscale", TrueGreyscaleChange.instance), null); // Most of the time linear greyscale is preferred.
-		registrar.registerEffect(new SimpleEffect("Sepia", SepiaChange.instance), null);
+		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Invert Colour", InvertChange.instance), 'I');
+		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Greyscale", GreyscaleChange.instance), 'G');
+		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "True Greyscale", TrueGreyscaleChange.instance), null); // Most of the time linear greyscale is preferred.
+		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Sepia", SepiaChange.instance), null);
 		
 		registrar.registerSerialiser(LineChange.class);
 		registrar.registerSerialiser(RectChange.class);
