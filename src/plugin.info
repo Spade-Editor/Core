@@ -1,11 +1,11 @@
-main : heroesgrave.paint.core.CorePlugin
+main : heroesgrave.spade.core.CorePlugin
 
 name : Core
-authors : Paint.JAVA Developers
+authors : Spade Developers
 
 version : 0.15-Dev
 updated : 25-11-2014
 
 min-paint-version : 0.15-Dev
 
-description : Official core plugin containing basic editor functions for Paint.JAVA
+description : Official core plugin containing basic editor functions for Spade
