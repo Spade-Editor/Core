@@ -24,11 +24,9 @@ import heroesgrave.paint.image.RawImage;
 import heroesgrave.paint.image.change.SingleChange;
 import heroesgrave.paint.image.change.edit.PathChange.IPathChange;
 
-import java.util.Arrays;
-
-public class FloodPathChange extends IPathChange
+public class GlobalFloodPathChange extends IPathChange
 {
-	public static final FloodPathChange instance = new FloodPathChange();
+	public static final GlobalFloodPathChange instance = new GlobalFloodPathChange();
 	
 	// TODO: move to RawImage instance method
 	// scan line flood fill as described in Wikipedia
@@ -46,54 +44,14 @@ public class FloodPathChange extends IPathChange
 		if(targetColor == color || mask != null && !mask[x + y * iw])
 			return;
 		
-		int[] stack = new int[1024];
-		int head = -1;
-		
-		stack[++head] = x + y * iw;
-		
-		while(head >= 0)
+		for(int i = 0; i < buffer.length; i++)
 		{
-			int n = stack[head--];
-			if(buffer[n] == targetColor) // mask predicate is guaranteed here
+			if(mask == null || mask[i])
 			{
-				final int ny = n / iw;
-				final int nyo = ny * iw;
-				final int nxl = nyo + iw;
-				int w = n, e = n;
-				// scan out on each side of current pixel
-				while(w >= nyo && buffer[w] == targetColor && (mask == null || mask[w]))
-					--w;
-				while(e < nxl && buffer[e] == targetColor && (mask == null || mask[e]))
-					++e;
-				// fill in between
-				w += 1;
-				
-				for(int i = w; i < e; ++i)
+				if(buffer[i] == targetColor)
+				{
 					buffer[i] = color;
-				
-				w -= iw;
-				e -= iw;
-				
-				if(ny > 0)
-					for(int i = w; i < e; ++i)
-						if(buffer[i] == targetColor && (mask == null || mask[i]))
-						{
-							stack[++head] = i;
-							if(head == stack.length - 1)
-								stack = Arrays.copyOf(stack, stack.length * 2);
-						}
-				
-				w += iw * 2;
-				e += iw * 2;
-				
-				if(ny < image.height - 1)
-					for(int i = w; i < e; ++i)
-						if(buffer[i] == targetColor && (mask == null || mask[i]))
-						{
-							stack[++head] = i;
-							if(head == stack.length - 1)
-								stack = Arrays.copyOf(stack, stack.length * 2);
-						}
+				}
 			}
 		}
 	}

@@ -25,19 +25,29 @@ import heroesgrave.paint.core.changes.RectChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.utils.math.MathUtils;
+import heroesgrave.utils.misc.WeblafWrapper;
+
+import javax.swing.JCheckBox;
 
 public class Rectangle extends Tool
 {
+	private JCheckBox fill;
+	
 	private RectChange rect;
 	
 	public Rectangle(String name)
 	{
 		super(name);
+		
+		this.fill = WeblafWrapper.createCheckBox();
+		fill.setText(" Fill");
+		
+		menu.add(WeblafWrapper.asMenuItem(fill));
 	}
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		if(isShiftDown())
+		if(isShiftDown() ^ fill.isSelected())
 			rect = new FillRectChange(x, y, x, y, getColour(button));
 		else
 			rect = new RectChange(x, y, x, y, getColour(button));

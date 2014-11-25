@@ -26,6 +26,7 @@ import heroesgrave.paint.core.changes.FillRectChange;
 import heroesgrave.paint.core.changes.FlipHorizChange;
 import heroesgrave.paint.core.changes.FlipVertChange;
 import heroesgrave.paint.core.changes.FloodPathChange;
+import heroesgrave.paint.core.changes.GlobalFloodPathChange;
 import heroesgrave.paint.core.changes.GreyscaleChange;
 import heroesgrave.paint.core.changes.InvertChange;
 import heroesgrave.paint.core.changes.LineChange;
@@ -88,6 +89,7 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(RectChange.class);
 		registrar.registerSerialiser(FillRectChange.class);
 		registrar.registerSerialiser(FloodPathChange.class);
+		registrar.registerSerialiser(GlobalFloodPathChange.class);
 		registrar.registerSerialiser(PixelChange.class);
 		registrar.registerSerialiser(MaskRectChange.class);
 		registrar.registerSerialiser(MoveChange.class);

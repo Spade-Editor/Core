@@ -25,31 +25,80 @@ import heroesgrave.paint.editing.SelectionTool;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.RawImage.MaskMode;
+import heroesgrave.utils.math.MathUtils;
+import heroesgrave.utils.misc.WeblafWrapper;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
+import javax.swing.JRadioButton;
 
 public class Select extends Tool implements SelectionTool
 {
+	private JCheckBox square;
+	private JRadioButton add, sub, xor, and, rep;
+	
 	private MaskRectChange rect;
 	
 	public Select(String name)
 	{
 		super(name);
+		
+		square = WeblafWrapper.createCheckBox();
+		square.setText(" Square");
+		
+		ButtonGroup modes = new ButtonGroup();
+		
+		rep = WeblafWrapper.createRadioButton();
+		rep.setText(" Replace");
+		rep.setSelected(true);
+		
+		add = WeblafWrapper.createRadioButton();
+		add.setText(" Add");
+		
+		sub = WeblafWrapper.createRadioButton();
+		sub.setText(" Subtract");
+		
+		xor = WeblafWrapper.createRadioButton();
+		xor.setText(" Invert");
+		
+		and = WeblafWrapper.createRadioButton();
+		and.setText(" Intersect");
+		
+		modes.add(rep);
+		modes.add(add);
+		modes.add(sub);
+		modes.add(xor);
+		modes.add(and);
+		
+		menu.add(WeblafWrapper.asMenuItem(rep));
+		menu.add(WeblafWrapper.asMenuItem(add));
+		menu.add(WeblafWrapper.asMenuItem(sub));
+		menu.add(WeblafWrapper.asMenuItem(xor));
+		menu.add(WeblafWrapper.asMenuItem(and));
+		
+		menu.add(WeblafWrapper.createSeparator());
+		menu.add(WeblafWrapper.asMenuItem(square));
 	}
 	
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		MaskMode mode;
-		if(isCtrlDown())
+		boolean add = this.add.isSelected() || isCtrlDown() || xor.isSelected();
+		boolean sub = this.sub.isSelected() || isAltDown() || xor.isSelected();
+		boolean and = this.and.isSelected() || isShiftDown();
+		
+		if(add)
 		{
-			if(isAltDown())
+			if(sub)
 				mode = MaskMode.XOR;
 			else
 				mode = MaskMode.ADD;
 		}
-		else if(isAltDown())
+		else if(sub)
 		{
 			mode = MaskMode.SUB;
 		}
-		else if(isShiftDown())
+		else if(and)
 		{
 			mode = MaskMode.AND;
 		}
@@ -63,6 +112,16 @@ public class Select extends Tool implements SelectionTool
 	
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
+		if(square.isSelected())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
 		rect.moveTo(x, y);
 		applyPreview();
 		rect = null;
@@ -70,6 +129,16 @@ public class Select extends Tool implements SelectionTool
 	
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
+		if(square.isSelected())
+		{
+			int dx = x - rect.x1;
+			int dy = y - rect.y1;
+			int mag = Math.max(Math.abs(dx), Math.abs(dy));
+			dx = MathUtils.sign(dx) * mag;
+			dy = MathUtils.sign(dy) * mag;
+			x = (short) (rect.x1 + dx);
+			y = (short) (rect.y1 + dy);
+		}
 		if(rect.moveTo(x, y))
 			repaint();
 	}

@@ -21,25 +21,41 @@
 package heroesgrave.paint.core.tools;
 
 import heroesgrave.paint.core.changes.FloodPathChange;
+import heroesgrave.paint.core.changes.GlobalFloodPathChange;
 import heroesgrave.paint.editing.Tool;
 import heroesgrave.paint.image.Layer;
 import heroesgrave.paint.image.change.edit.PathChange;
+import heroesgrave.utils.misc.WeblafWrapper;
 
 import java.awt.Point;
+
+import javax.swing.JCheckBox;
 
 public class FloodFill extends Tool
 {
 	private PathChange path;
 	
+	private JCheckBox isGlobal;
+	
 	public FloodFill(String name)
 	{
 		super(name);
+		
+		// XXX: WebCheckBoxMenuItem is broken.
+		
+		this.isGlobal = WeblafWrapper.createCheckBox();
+		isGlobal.setText(" Global");
+		
+		menu.add(WeblafWrapper.asMenuItem(isGlobal));
 	}
 	
 	@Override
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
-		path = new PathChange(new Point(x, y), getColour(button), FloodPathChange.instance);
+		if(isGlobal.isSelected())
+			path = new PathChange(new Point(x, y), getColour(button), GlobalFloodPathChange.instance);
+		else
+			path = new PathChange(new Point(x, y), getColour(button), FloodPathChange.instance);
 		preview(path);
 	}
 	
