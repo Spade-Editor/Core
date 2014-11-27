@@ -19,13 +19,13 @@ Spade\*, download the latest `Spade-Minimal.jar` from the
 [release page](https://github.com/Spade-Editor/Spade/releases) and use that for
 step 4 below.
 
-\* It's important to note that if the master build of Core has a minimum paint version
+\* It's important to note that if the master build of Core has a minimum spade version
 requirement higher than the latest release, you need to follow option 1, or else your
 contributions may not be able to be merged back into master due to being out of date.
 
 The minimum Spade version of Core can be found in the
 [`plugin.info`](https://github.com/Spade-Editor/Core/blob/master/src/plugin.info) file
-(see the field `min-paint-version`).
+(see the field `min-spade-version`).
 
 #### Setting up Core plugin for development
 
