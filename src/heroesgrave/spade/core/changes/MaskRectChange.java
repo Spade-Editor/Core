@@ -24,13 +24,13 @@ import heroesgrave.spade.image.RawImage;
 import heroesgrave.spade.image.RawImage.MaskMode;
 import heroesgrave.spade.image.change.IEditChange;
 import heroesgrave.spade.image.change.IMaskChange;
-import heroesgrave.spade.io.Serialised;
+import heroesgrave.spade.image.change.SerialisedChange;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class MaskRectChange implements IEditChange, IMaskChange, Serialised
+public class MaskRectChange extends SerialisedChange implements IEditChange, IMaskChange
 {
 	public short x1, y1, x2, y2;
 	private MaskMode mode;
@@ -61,20 +61,10 @@ public class MaskRectChange implements IEditChange, IMaskChange, Serialised
 	@Override
 	public void apply(RawImage image)
 	{
+		if(!image.isMaskEnabled() && (mode == MaskMode.AND || mode == MaskMode.SUB))
+			return;
 		image.setMaskEnabled(true);
 		image.maskRect(Math.min(x1, x2), Math.min(y1, y2), Math.max(x1, x2), Math.max(y1, y2), mode);
-	}
-	
-	@Override
-	public MaskRectChange encode()
-	{
-		return this;
-	}
-	
-	@Override
-	public MaskRectChange decode()
-	{
-		return this;
 	}
 	
 	@Override

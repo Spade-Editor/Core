@@ -23,9 +23,9 @@ package heroesgrave.spade.core.tools;
 import heroesgrave.spade.core.changes.FillRectChange;
 import heroesgrave.spade.core.changes.RectChange;
 import heroesgrave.spade.editing.Tool;
+import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.utils.math.MathUtils;
-import heroesgrave.utils.misc.WeblafWrapper;
 
 import javax.swing.JCheckBox;
 

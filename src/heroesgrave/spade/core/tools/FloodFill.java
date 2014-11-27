@@ -23,9 +23,9 @@ package heroesgrave.spade.core.tools;
 import heroesgrave.spade.core.changes.FloodPathChange;
 import heroesgrave.spade.core.changes.GlobalFloodPathChange;
 import heroesgrave.spade.editing.Tool;
+import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.change.edit.PathChange;
-import heroesgrave.utils.misc.WeblafWrapper;
 
 import java.awt.Point;
 

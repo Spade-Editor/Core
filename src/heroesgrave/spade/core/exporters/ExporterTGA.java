@@ -20,7 +20,7 @@
 
 package heroesgrave.spade.core.exporters;
 
-import heroesgrave.spade.gui.ProgressDialog;
+import heroesgrave.spade.gui.dialogs.ProgressDialog;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.io.ImageExporter;
 

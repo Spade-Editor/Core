@@ -20,33 +20,32 @@
 
 package heroesgrave.spade.core.tools;
 
-import heroesgrave.spade.core.changes.MaskRectChange;
+import heroesgrave.spade.core.changes.FloodSelectChange;
 import heroesgrave.spade.editing.SelectionTool;
 import heroesgrave.spade.editing.Tool;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage.MaskMode;
-import heroesgrave.utils.math.MathUtils;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JRadioButton;
 
-public class Select extends Tool implements SelectionTool
+public class FloodSelect extends Tool implements SelectionTool
 {
-	private JCheckBox square;
+	private FloodSelectChange change;
 	private JRadioButton add, sub, xor, and, rep;
 	
-	private MaskRectChange rect;
+	private JCheckBox isGlobal;
 	
-	public Select(String name)
+	public FloodSelect(String name)
 	{
 		super(name);
 		
-		square = WeblafWrapper.createCheckBox();
-		square.setText(" Square");
-		
 		ButtonGroup modes = new ButtonGroup();
+		
+		this.isGlobal = WeblafWrapper.createCheckBox();
+		isGlobal.setText(" Global");
 		
 		rep = WeblafWrapper.createRadioButton();
 		rep.setText(" Replace");
@@ -77,9 +76,10 @@ public class Select extends Tool implements SelectionTool
 		menu.add(WeblafWrapper.asMenuItem(and));
 		
 		menu.add(WeblafWrapper.createSeparator());
-		menu.add(WeblafWrapper.asMenuItem(square));
+		menu.add(WeblafWrapper.asMenuItem(isGlobal));
 	}
 	
+	@Override
 	public void onPressed(Layer layer, short x, short y, int button)
 	{
 		MaskMode mode;
@@ -106,40 +106,21 @@ public class Select extends Tool implements SelectionTool
 		{
 			mode = MaskMode.REP;
 		}
-		rect = new MaskRectChange(x, y, x, y, mode);
-		preview(rect);
+		change = new FloodSelectChange(x, y, mode, isGlobal.isSelected());
+		preview(change);
 	}
 	
+	@Override
 	public void onReleased(Layer layer, short x, short y, int button)
 	{
-		if(square.isSelected())
-		{
-			int dx = x - rect.x1;
-			int dy = y - rect.y1;
-			int mag = Math.max(Math.abs(dx), Math.abs(dy));
-			dx = MathUtils.sign(dx) * mag;
-			dy = MathUtils.sign(dy) * mag;
-			x = (short) (rect.x1 + dx);
-			y = (short) (rect.y1 + dy);
-		}
-		rect.moveTo(x, y);
 		applyPreview();
-		rect = null;
+		change = null;
 	}
 	
+	@Override
 	public void whilePressed(Layer layer, short x, short y, int button)
 	{
-		if(square.isSelected())
-		{
-			int dx = x - rect.x1;
-			int dy = y - rect.y1;
-			int mag = Math.max(Math.abs(dx), Math.abs(dy));
-			dx = MathUtils.sign(dx) * mag;
-			dy = MathUtils.sign(dy) * mag;
-			x = (short) (rect.x1 + dx);
-			y = (short) (rect.y1 + dy);
-		}
-		if(rect.moveTo(x, y))
+		if(change.moveTo(x, y))
 			repaint();
 	}
 }

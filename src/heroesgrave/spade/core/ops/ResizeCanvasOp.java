@@ -21,23 +21,26 @@
 package heroesgrave.spade.core.ops;
 
 import heroesgrave.spade.editing.Effect;
+import heroesgrave.spade.gui.dialogs.TabbedEffectDialog;
+import heroesgrave.spade.gui.misc.WeblafWrapper;
+import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.change.doc.DocResize;
 import heroesgrave.spade.image.change.edit.ResizeCanvasChange;
-import heroesgrave.utils.misc.DialogWrapper;
+import heroesgrave.spade.main.Popup;
+import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.misc.NumberFilter;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
 import javax.swing.text.AbstractDocument;
 
 public class ResizeCanvasOp extends Effect
@@ -50,41 +53,92 @@ public class ResizeCanvasOp extends Effect
 	@Override
 	public void perform(final Layer layer)
 	{
-		DialogWrapper _dialog = new DialogWrapper("Resize Canvas");
-		final JDialog dialog = _dialog.dialog;
-		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0, 2));
-		
-		dialog.getContentPane().add(panel);
-		
-		dialog.setAlwaysOnTop(true);
-		dialog.setAutoRequestFocus(true);
+		final TabbedEffectDialog dialog = new TabbedEffectDialog(2, "Resize Image", getIcon());
 		
 		final JTextField width = new JTextField("" + layer.getWidth());
 		final JTextField height = new JTextField("" + layer.getHeight());
 		
-		((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
-		((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
+		final JTextField widthF = new JTextField("100%");
+		final JTextField heightF = new JTextField("100%");
 		
-		width.setColumns(8);
-		height.setColumns(8);
+		dialog.getDialog().setPreferredSize(new Dimension(180, 140));
 		
-		JLabel wl = new JLabel("Width: ");
-		wl.setHorizontalAlignment(SwingConstants.CENTER);
-		JLabel hl = new JLabel("Height: ");
-		hl.setHorizontalAlignment(SwingConstants.CENTER);
+		// Dimensional
+		{
+			JPanel panel = dialog.getPanel(0);
+			dialog.setPanelTitle(0, "Dimensions");
+			panel.setLayout(new GridLayout(0, 2));
+			
+			((AbstractDocument) width.getDocument()).setDocumentFilter(new NumberFilter());
+			((AbstractDocument) height.getDocument()).setDocumentFilter(new NumberFilter());
+			
+			width.setColumns(4);
+			height.setColumns(4);
+			
+			JLabel wl = WeblafWrapper.createLabel("Width: ");
+			wl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			JLabel hl = WeblafWrapper.createLabel("Height: ");
+			hl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			panel.add(wl);
+			panel.add(width);
+			
+			panel.add(hl);
+			panel.add(height);
+		}
 		
-		JButton create = new JButton("Resize");
-		JButton cancel = new JButton("Cancel");
+		// Proportional
+		{
+			JPanel panel = dialog.getPanel(1);
+			dialog.setPanelTitle(1, "Proportions");
+			panel.setLayout(new GridLayout(0, 2));
+			
+			((AbstractDocument) widthF.getDocument()).setDocumentFilter(new NumberFilter());
+			((AbstractDocument) heightF.getDocument()).setDocumentFilter(new NumberFilter());
+			
+			widthF.setColumns(4);
+			heightF.setColumns(4);
+			
+			JLabel wl = WeblafWrapper.createLabel("Width: ");
+			wl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			JLabel hl = WeblafWrapper.createLabel("Height: ");
+			hl.setHorizontalAlignment(SwingConstants.CENTER);
+			
+			panel.add(wl);
+			panel.add(widthF);
+			
+			panel.add(hl);
+			panel.add(heightF);
+		}
+		
+		JPanel panel = dialog.getBottomPanel();
+		panel.setLayout(new GridLayout(0, 2));
+		JButton create = WeblafWrapper.createButton("Resize");
+		JButton cancel = WeblafWrapper.createButton("Cancel");
+		
+		panel.add(create);
+		panel.add(cancel);
 		
 		create.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				dialog.dispose();
-				resize(layer, Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
+				dialog.close();
+				if(width.getText().equals("") || height.getText().equals(""))
+					return;
+				if(dialog.getSelectedPanel() == 0)
+				{
+					resize(layer, Integer.parseInt(width.getText()), Integer.parseInt(height.getText()));
+				}
+				else if(dialog.getSelectedPanel() == 1)
+				{
+					String w = widthF.getText().replace("%", "");
+					String h = heightF.getText().replace("%", "");
+					resize(layer, MathUtils.floor(Float.parseFloat(w) / 100f * layer.getWidth()),
+							MathUtils.floor(Float.parseFloat(h) / 100f * layer.getHeight()));
+				}
 			}
 		});
 		
@@ -92,25 +146,22 @@ public class ResizeCanvasOp extends Effect
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				dialog.dispose();
+				dialog.close();
 			}
 		});
 		
-		panel.add(wl);
-		panel.add(width);
-		panel.add(hl);
-		panel.add(height);
-		panel.add(create);
-		panel.add(cancel);
-		
-		dialog.pack();
-		dialog.setResizable(false);
-		dialog.setVisible(true);
-		_dialog.centre();
+		dialog.display();
 	}
 	
 	public void resize(Layer layer, int w, int h)
 	{
-		layer.getDocument().addChange(new DocResize(new ResizeCanvasChange(w, h)));
+		if(w < 1 || h < 1 || w > Document.MAX_DIMENSION || h > Document.MAX_DIMENSION)
+		{
+			Popup.show("Invalid Image Dimensions", "Image must have dimensions higher than 0 and no more than " + Document.MAX_DIMENSION);
+		}
+		else
+		{
+			layer.getDocument().addChange(new DocResize(new ResizeCanvasChange(w, h)));
+		}
 	}
 }

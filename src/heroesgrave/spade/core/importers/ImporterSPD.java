@@ -20,7 +20,7 @@
 
 package heroesgrave.spade.core.importers;
 
-import heroesgrave.spade.gui.ProgressDialog;
+import heroesgrave.spade.gui.dialogs.ProgressDialog;
 import heroesgrave.spade.image.Document;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;
@@ -37,7 +37,7 @@ import java.util.zip.GZIPInputStream;
 public class ImporterSPD extends ImageImporter
 {
 	@Override
-	public void load(File file, Document doc) throws IOException
+	public boolean load(File file, Document doc) throws IOException
 	{
 		GZIPInputStream zip = new GZIPInputStream(new BufferedInputStream(new FileInputStream(file)));
 		DataInputStream in = new DataInputStream(zip);
@@ -56,6 +56,7 @@ public class ImporterSPD extends ImageImporter
 		doc.setRoot(readLayer(in, doc, dialog));
 		
 		dialog.close();
+		return true;
 	}
 	
 	private Layer readLayer(DataInputStream in, Document doc, ProgressDialog dialog) throws IOException

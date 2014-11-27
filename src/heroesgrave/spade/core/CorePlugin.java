@@ -26,6 +26,7 @@ import heroesgrave.spade.core.changes.FillRectChange;
 import heroesgrave.spade.core.changes.FlipHorizChange;
 import heroesgrave.spade.core.changes.FlipVertChange;
 import heroesgrave.spade.core.changes.FloodPathChange;
+import heroesgrave.spade.core.changes.FloodSelectChange;
 import heroesgrave.spade.core.changes.GlobalFloodPathChange;
 import heroesgrave.spade.core.changes.GreyscaleChange;
 import heroesgrave.spade.core.changes.InvertChange;
@@ -37,6 +38,7 @@ import heroesgrave.spade.core.changes.RectChange;
 import heroesgrave.spade.core.changes.ResizeImageChange;
 import heroesgrave.spade.core.changes.SepiaChange;
 import heroesgrave.spade.core.changes.TrueGreyscaleChange;
+import heroesgrave.spade.core.effects.GreyscaleEffect;
 import heroesgrave.spade.core.exporters.ExporterJPEG;
 import heroesgrave.spade.core.exporters.ExporterSPD;
 import heroesgrave.spade.core.exporters.ExporterTGA;
@@ -45,6 +47,7 @@ import heroesgrave.spade.core.ops.ResizeCanvasOp;
 import heroesgrave.spade.core.ops.ResizeImageOp;
 import heroesgrave.spade.core.tools.Eraser;
 import heroesgrave.spade.core.tools.FloodFill;
+import heroesgrave.spade.core.tools.FloodSelect;
 import heroesgrave.spade.core.tools.Line;
 import heroesgrave.spade.core.tools.Move;
 import heroesgrave.spade.core.tools.Rectangle;
@@ -72,19 +75,19 @@ public class CorePlugin extends Plugin
 	{
 		registrar.registerTool(new Line("Line"), 'L');
 		registrar.registerTool(new Rectangle("Rectangle"), 'R');
-		registrar.registerTool(new Select("Select"), 'S');
-		registrar.registerTool(new Move("Move"), 'M');
 		registrar.registerTool(new Eraser("Eraser"), 'E');
+		registrar.registerTool(new Select("Select"), 'S');
+		registrar.registerTool(new FloodSelect("Magic Wand"), 'Z');
 		registrar.registerTool(new FloodFill("Paint Bucket"), 'F');
+		registrar.registerTool(new Move("Move"), 'M');
 		
 		registrar.registerOperation(new ResizeImageOp("Resize Image"), 'R');
 		registrar.registerOperation(new ResizeCanvasOp("Resize Canvas"), null);
 		registrar.registerOperation(new SimpleEffect(CorePlugin.class, "Flip Vertically", FlipVertChange.instance), 'V');
 		registrar.registerOperation(new SimpleEffect(CorePlugin.class, "Flip Horizontally", FlipHorizChange.instance), 'H');
 		
+		registrar.registerEffect(new GreyscaleEffect("Greyscale"), 'G');
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Invert Colour", InvertChange.instance), 'I');
-		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Greyscale", GreyscaleChange.instance), 'G');
-		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "True Greyscale", TrueGreyscaleChange.instance), null); // Most of the time linear greyscale is preferred.
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Sepia", SepiaChange.instance), null);
 		
 		registrar.registerSerialiser(LineChange.class);
@@ -92,6 +95,7 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(FillRectChange.class);
 		registrar.registerSerialiser(FloodPathChange.class);
 		registrar.registerSerialiser(GlobalFloodPathChange.class);
+		registrar.registerSerialiser(FloodSelectChange.class);
 		registrar.registerSerialiser(PixelChange.class);
 		registrar.registerSerialiser(MaskRectChange.class);
 		registrar.registerSerialiser(MoveChange.class);
@@ -101,6 +105,7 @@ public class CorePlugin extends Plugin
 		registrar.registerSerialiser(ResizeImageChange.class);
 		
 		registrar.registerSerialiser(InvertChange.class);
+		registrar.registerSerialiser(GreyscaleChange.class);
 		registrar.registerSerialiser(TrueGreyscaleChange.class);
 		registrar.registerSerialiser(SepiaChange.class);
 		
