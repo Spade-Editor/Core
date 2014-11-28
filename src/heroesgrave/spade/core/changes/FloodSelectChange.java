@@ -78,21 +78,7 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 			{
 				if(buffer[i] == targetColor)
 				{
-					switch(mode)
-					{
-						case REP:
-						case ADD:
-							mask[i] = true;
-							break;
-						case SUB:
-							mask[i] = false;
-							break;
-						case XOR:
-							mask[i] = !mask[i];
-							break;
-						case AND:
-							break;
-					}
+					mask[i] = mode.transform(mask[i]);
 				}
 				else if(mode == MaskMode.AND)
 				{
@@ -102,6 +88,8 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 		}
 		else
 		{
+			boolean[] visited = new boolean[mask.length];
+			
 			boolean[] newMask = null;
 			switch(mode)
 			{
@@ -120,6 +108,9 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 			
 			stack[++head] = x + y * iw;
 			
+			// XXX A bit of hacking was done here.
+			// It may not be an optimal solution.
+			// A different algorithm is probably required.
 			while(head >= 0)
 			{
 				int n = stack[head--];
@@ -130,37 +121,25 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 					final int nxl = nyo + iw;
 					int w = n, e = n;
 					// scan out on each side of current pixel
-					while(w >= nyo && buffer[w] == targetColor && !mask[w])
+					while(w >= nyo && buffer[w] == targetColor && !visited[w])
 						--w;
-					while(e < nxl && buffer[e] == targetColor && !mask[e])
+					while(e < nxl && buffer[e] == targetColor && !visited[e])
 						++e;
 					// fill in between
 					w += 1;
 					
 					for(int i = w; i < e; ++i)
-						switch(mode)
-						{
-							case REP:
-							case ADD:
-								newMask[i] = true;
-								break;
-							case SUB:
-								newMask[i] = false;
-								break;
-							case AND:
-								newMask[i] = mask[i];
-								break;
-							case XOR:
-								newMask[i] = !mask[i];
-								break;
-						}
+					{
+						newMask[i] = mode.transform(mask[i]);
+						visited[i] = true;
+					}
 					
 					w -= iw;
 					e -= iw;
 					
 					if(ny > 0)
 						for(int i = w; i < e; ++i)
-							if(buffer[i] == targetColor && !mask[i])
+							if(buffer[i] == targetColor && !visited[i])
 							{
 								stack[++head] = i;
 								if(head == stack.length - 1)
@@ -172,7 +151,7 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 					
 					if(ny < image.height - 1)
 						for(int i = w; i < e; ++i)
-							if(buffer[i] == targetColor && !mask[i])
+							if(buffer[i] == targetColor && !visited[i])
 							{
 								stack[++head] = i;
 								if(head == stack.length - 1)
@@ -180,6 +159,8 @@ public class FloodSelectChange extends SerialisedChange implements IEditChange, 
 							}
 				}
 			}
+			
+			image.setMask(newMask);
 		}
 	}
 	
