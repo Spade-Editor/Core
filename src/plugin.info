@@ -6,6 +6,6 @@ authors : Spade Developers
 version : 0.15-Dev
 updated : 28-11-2014
 
-min-paint-version : 0.15-Dev
+min-spade-version : 0.15-Dev
 
 description : Official core plugin containing basic editor functions for Spade
