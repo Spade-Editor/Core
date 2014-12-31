@@ -40,8 +40,10 @@ import heroesgrave.spade.core.changes.SepiaChange;
 import heroesgrave.spade.core.changes.TrueGreyscaleChange;
 import heroesgrave.spade.core.effects.GreyscaleEffect;
 import heroesgrave.spade.core.exporters.ExporterJPEG;
+import heroesgrave.spade.core.exporters.ExporterORA;
 import heroesgrave.spade.core.exporters.ExporterSPD;
 import heroesgrave.spade.core.exporters.ExporterTGA;
+import heroesgrave.spade.core.importers.ImporterORA;
 import heroesgrave.spade.core.importers.ImporterSPD;
 import heroesgrave.spade.core.ops.ResizeCanvasOp;
 import heroesgrave.spade.core.ops.ResizeImageOp;
@@ -117,7 +119,9 @@ public class CorePlugin extends Plugin
 		registrar.registerExporter(new ExporterJPEG());
 		registrar.registerExporter(new ExporterTGA());
 		registrar.registerExporter(new ExporterSPD());
+		registrar.registerExporter(new ExporterORA());
 		
 		registrar.registerImporter(new ImporterSPD());
+		registrar.registerImporter(new ImporterORA());
 	}
 }
