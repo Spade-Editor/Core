@@ -3,9 +3,9 @@ main : heroesgrave.spade.core.CorePlugin
 name : Core
 authors : Spade Developers
 
-version : 0.15-Dev
-updated : 28-11-2014
+version : 0.16-Dev
+updated : 19-01-2015
 
-min-spade-version : 0.15-Dev
+min-spade-version : 0.16-Dev
 
 description : Official core plugin containing basic editor functions for Spade

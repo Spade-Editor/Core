@@ -1,6 +1,6 @@
 // {LICENSE}
 /*
- * Copyright 2013-2014 HeroesGrave and other Spade developers.
+ * Copyright 2013-2015 HeroesGrave and other Spade developers.
  * 
  * This file is part of Spade
  * 
@@ -31,7 +31,6 @@ import heroesgrave.spade.main.Popup;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.misc.NumberFilter;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,8 +59,6 @@ public class ResizeImageOp extends Effect
 		
 		final JTextField widthF = new JTextField("100%");
 		final JTextField heightF = new JTextField("100%");
-		
-		dialog.getDialog().setPreferredSize(new Dimension(180, 140));
 		
 		// Dimensional
 		{
