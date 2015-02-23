@@ -63,7 +63,7 @@ public class CorePlugin extends Plugin
 {
 	public static void main(String[] args)
 	{
-		launchSpadeWithPlugins(args, false, new CorePlugin());
+		launchSpadeWithPlugins(args, new CorePlugin());
 	}
 	
 	@Override
