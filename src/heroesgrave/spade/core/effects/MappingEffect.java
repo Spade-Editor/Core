@@ -140,7 +140,7 @@ public class MappingEffect extends Effect {
 	}
 	
 	@SuppressWarnings("serial")
-	private static class MappingPanel extends JComponent {
+	private static class MappingPanel extends JComponent implements MouseListener, MouseMotionListener {
 		
 		PiecewiseLinearMapping[] mappings = {
 				PiecewiseLinearMapping.identity(),
@@ -153,6 +153,8 @@ public class MappingEffect extends Effect {
 		
 		Map<Point2D.Float, Object> xFixed = new IdentityHashMap<>();
 		List<Point2D.Float> active = new ArrayList<>();
+		Point2D.Float mouse = new Point2D.Float();
+		Consumer<MappingState> consumer;
 		
 		final int pradius = 4;
 		
@@ -170,7 +172,7 @@ public class MappingEffect extends Effect {
 			}
 		};
 		
-		MappingPanel(final Consumer<MappingState> mouseConsumer) {
+		MappingPanel(Consumer<MappingState> consumer) {
 			setSize(400, 400);
 			setPreferredSize(getSize());
 			
@@ -178,99 +180,10 @@ public class MappingEffect extends Effect {
 				for (Point2D.Float p : mappings[i].points)
 					xFixed.put(p, null);
 			
-			MouseAdapter listener = new MouseAdapter() {
-				Point2D.Float mouse = new Point2D.Float();
-				
-				@Override
-				public void mousePressed(MouseEvent e) {
-					Point p = e.getPoint();
-					
-					float tx = p.x / (float) getWidth();
-					float ty = 1 - (p.y / (float) getHeight());
-					
-					if (mouseConsumer != null)
-						mouseConsumer.accept(new MappingState(new Point(Math.round(tx * 255), Math.round(ty * 255)), null));
-					
-					if (e.getButton() == MouseEvent.BUTTON1) {
-						if (active.isEmpty())
-							for (int i = 0; i < mappings.length; i++)
-								if (enabled[i]) {
-									Point2D.Float t = new Point2D.Float(tx, ty);
-									int idx = 0;
-									while (mappings[i].points.get(idx).x < t.x)
-										idx++;
-									mappings[i].points.add(idx, t);
-								}
-					} else if (e.getButton() == MouseEvent.BUTTON3) {
-						for (int i = active.size() - 1; i >= 0; i--) {
-							Point2D.Float t = active.get(i);
-							if (!xFixed.containsKey(t)) {
-								for (int z = 0; z < mappings.length; z++)
-									mappings[z].points.remove(t);
-								active.remove(i);
-							}
-						}
-					}
-					
-					setActive(p);
-					repaint();
-				}
-				
-				@Override
-				public void mouseMoved(MouseEvent e) {
-					setActive(e.getPoint());
-					repaint();
-				}
-				
-				@Override
-				public void mouseDragged(MouseEvent e) {
-					Point p = e.getPoint();
-					p.x = MathUtils.clamp(p.x, 0, getWidth());
-					p.y = MathUtils.clamp(p.y, 0, getHeight());
-					float tx = p.x / (float) getWidth();
-					float ty = 1 - (p.y / (float) getHeight());
-					
-					if (!active.isEmpty()) {
-						if (mouseConsumer != null) {
-							float x = active.get(0).x;
-							float y = active.get(0).y;
-							mouseConsumer.accept(new MappingState(new Point(Math.round(x * 255), Math.round(y * 255)), null));
-						}
-						
-						for (Point2D.Float t : active)
-							t.setLocation(xFixed.containsKey(t) ? t.x : tx, ty);
-						for (int i = 0; i < mappings.length; i++)
-							if (enabled[i])
-								Collections.sort(mappings[i].points, xComp1);
-						repaint();
-					}
-					
-				}
-				
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					fillLookups();
-					if (mouseConsumer != null)
-						mouseConsumer.accept(new MappingState(null, lookups));
-					setActive(e.getPoint());
-					repaint();
-				}
-				
-				private void setActive(Point p) {
-					mouse.x = p.x / (float) getWidth();
-					mouse.y = 1 - (p.y / (float) getHeight());
-					
-					active.clear();
-					for (int i = 0; i < mappings.length; i++)
-						if (enabled[i])
-							for (Point2D.Float pt : mappings[i].points)
-								if (mouse.distance(pt) <= pradius * 1.7 / getWidth())
-									active.add(pt);
-				}
-			};
+			this.consumer = consumer;
 			
-			addMouseListener(listener);
-			addMouseMotionListener(listener);
+			addMouseListener(this);
+			addMouseMotionListener(this);
 		}
 		
 		private void fillLookups() {
@@ -284,14 +197,13 @@ public class MappingEffect extends Effect {
 		
 		@Override
 		public void paint(Graphics gg) {
-			
 			Graphics2D g = (Graphics2D) gg;
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
-			Pair<Set<GraphEdge>, Set<Pair<Point2D.Float, Color>>> graph = graph();
-			
 			Stroke tmp = g.getStroke();
 			g.setStroke(new BasicStroke(1.4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			
+			Pair<Set<GraphEdge>, Set<Pair<Point2D.Float, Color>>> graph = graph();
 			
 			GraphEdge[] edges = graph.t.toArray(new GraphEdge[graph.t.size()]);
 			Arrays.sort(edges, xComp2); // stop z-fighting
@@ -308,7 +220,6 @@ public class MappingEffect extends Effect {
 			}
 			
 			g.setStroke(tmp);
-			
 			g.setColor(Color.gray);
 			g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 		}
@@ -380,6 +291,105 @@ public class MappingEffect extends Effect {
 				} else
 					return e.equals(this);
 			}
+		}
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			Point p = e.getPoint();
+			
+			float tx = p.x / (float) getWidth();
+			float ty = 1 - (p.y / (float) getHeight());
+			
+			if (consumer != null)
+				consumer.accept(new MappingState(new Point(Math.round(tx * 255), Math.round(ty * 255)), null));
+			
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				if (active.isEmpty())
+					for (int i = 0; i < mappings.length; i++)
+						if (enabled[i]) {
+							Point2D.Float t = new Point2D.Float(tx, ty);
+							int idx = 0;
+							while (mappings[i].points.get(idx).x < t.x)
+								idx++;
+							mappings[i].points.add(idx, t);
+						}
+			} else if (e.getButton() == MouseEvent.BUTTON3) {
+				for (int i = active.size() - 1; i >= 0; i--) {
+					Point2D.Float t = active.get(i);
+					if (!xFixed.containsKey(t)) {
+						for (int z = 0; z < mappings.length; z++)
+							mappings[z].points.remove(t);
+						active.remove(i);
+					}
+				}
+			}
+			
+			setActive(p);
+			repaint();
+		}
+		
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			setActive(e.getPoint());
+			repaint();
+		}
+		
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			Point p = e.getPoint();
+			p.x = MathUtils.clamp(p.x, 0, getWidth());
+			p.y = MathUtils.clamp(p.y, 0, getHeight());
+			float tx = p.x / (float) getWidth();
+			float ty = 1 - (p.y / (float) getHeight());
+			
+			if (!active.isEmpty()) {
+				if (consumer != null) {
+					float x = active.get(0).x;
+					float y = active.get(0).y;
+					consumer.accept(new MappingState(new Point(Math.round(x * 255), Math.round(y * 255)), null));
+				}
+				
+				for (Point2D.Float t : active)
+					t.setLocation(xFixed.containsKey(t) ? t.x : tx, ty);
+				for (int i = 0; i < mappings.length; i++)
+					if (enabled[i])
+						Collections.sort(mappings[i].points, xComp1);
+				repaint();
+			}
+			
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			fillLookups();
+			if (consumer != null)
+				consumer.accept(new MappingState(null, lookups));
+			setActive(e.getPoint());
+			repaint();
+		}
+		
+		private void setActive(Point p) {
+			mouse.x = p.x / (float) getWidth();
+			mouse.y = 1 - (p.y / (float) getHeight());
+			
+			active.clear();
+			for (int i = 0; i < mappings.length; i++)
+				if (enabled[i])
+					for (Point2D.Float pt : mappings[i].points)
+						if (mouse.distance(pt) <= pradius * 1.7 / getWidth())
+							active.add(pt);
+		}
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+		}
+		
+		@Override
+		public void mouseEntered(MouseEvent e) {
+		}
+		
+		@Override
+		public void mouseExited(MouseEvent e) {
 		}
 	}
 	
