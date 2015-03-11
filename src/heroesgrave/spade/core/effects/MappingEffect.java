@@ -230,10 +230,13 @@ public class MappingEffect extends Effect {
 					float tx = p.x / (float) getWidth();
 					float ty = 1 - (p.y / (float) getHeight());
 					
-					if (mouseConsumer != null)
-						mouseConsumer.accept(new MappingState(new Point(Math.round(tx * 255), Math.round(ty * 255)), null));
-					
 					if (!active.isEmpty()) {
+						if (mouseConsumer != null) {
+							float x = active.get(0).x;
+							float y = active.get(0).y;
+							mouseConsumer.accept(new MappingState(new Point(Math.round(x * 255), Math.round(y * 255)), null));
+						}
+						
 						for (Point2D.Float t : active)
 							t.setLocation(xFixed.containsKey(t) ? t.x : tx, ty);
 						for (int i = 0; i < mappings.length; i++)
