@@ -18,6 +18,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import heroesgrave.utils.misc.Pair;
+
 /*
  * TODO: generalize to any type of mapping
  * 
@@ -288,7 +290,7 @@ public class MappingEffect extends Effect {
 			Stroke tmp = g.getStroke();
 			g.setStroke(new BasicStroke(1.4f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 			
-			GraphEdge[] edges = graph.a.toArray(new GraphEdge[graph.a.size()]);
+			GraphEdge[] edges = graph.t.toArray(new GraphEdge[graph.t.size()]);
 			Arrays.sort(edges, xComp2); // stop z-fighting
 			
 			for (GraphEdge e : edges) {
@@ -296,10 +298,10 @@ public class MappingEffect extends Effect {
 				g.draw(new Line2D.Float(e.a.x * getWidth(), (1 - e.a.y) * getHeight(), e.b.x * getWidth(), (1 - e.b.y) * getHeight()));
 			}
 			
-			for (Pair<Point2D.Float, Color> p : graph.b) {
-				float radius = active.contains(p.a) ? pradius * 1.5f : pradius;
-				g.setColor(p.b);
-				g.draw(new Ellipse2D.Float(p.a.x * getWidth() - radius, (1 - p.a.y) * getHeight() - radius, 2 * radius, 2 * radius));
+			for (Pair<Point2D.Float, Color> p : graph.u) {
+				float radius = active.contains(p.t) ? pradius * 1.5f : pradius;
+				g.setColor(p.u);
+				g.draw(new Ellipse2D.Float(p.t.x * getWidth() - radius, (1 - p.t.y) * getHeight() - radius, 2 * radius, 2 * radius));
 			}
 			
 			g.setStroke(tmp);
@@ -331,8 +333,8 @@ public class MappingEffect extends Effect {
 			// color points
 			for (Pair<Point2D.Float, Color> p : points) {
 				for (int x = 0; x < channels.length; x++)
-					channels[x] = enabled[x] && mappings[x].points.contains(p.a);
-				p.b = blend(channels);
+					channels[x] = enabled[x] && mappings[x].points.contains(p.t);
+				p.u = blend(channels);
 			}
 			
 			// color edges
@@ -401,17 +403,6 @@ public class MappingEffect extends Effect {
 		
 		static PiecewiseLinearMapping identity() {
 			return new PiecewiseLinearMapping();
-		}
-	}
-	
-	// something something tuples
-	private static class Pair<A, B> {
-		A a;
-		B b;
-		
-		Pair(A a, B b) {
-			this.a = a;
-			this.b = b;
 		}
 	}
 	
