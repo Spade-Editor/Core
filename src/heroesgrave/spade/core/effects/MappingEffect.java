@@ -462,6 +462,8 @@ public class MappingEffect extends Effect {
 			Point2D.Float start = points.get(i - 1);
 			Point2D.Float end = points.get(Math.min(i, points.size() - 1));
 			
+			if (start.x == end.x)
+				return start.y;
 			return start.y + (end.y - start.y) * ((x - start.x) / (end.x - start.x));
 		}
 		
