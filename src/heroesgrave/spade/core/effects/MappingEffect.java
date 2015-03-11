@@ -2,6 +2,7 @@ package heroesgrave.spade.core.effects;
 
 import heroesgrave.spade.core.changes.MappingChange;
 import heroesgrave.spade.editing.Effect;
+import heroesgrave.spade.gui.colorchooser.ColorUtils;
 import heroesgrave.spade.gui.dialogs.GridEffectDialog;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
@@ -11,6 +12,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.util.*;
 import java.util.List;
 
@@ -46,7 +49,12 @@ public class MappingEffect extends Effect {
 				WeblafWrapper.createLabel("Green"),
 				WeblafWrapper.createLabel("Blue") };
 		
-		final MappingPanel mapping = new MappingPanel(new Consumer<MappingState>() {
+		BufferedImage original = new BufferedImage(layer.getWidth(), layer.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = original.createGraphics();
+		layer.render(g);
+		g.dispose();
+		
+		final MappingPanel mapping = new MappingPanel(original, new Consumer<MappingState>() {
 			@Override
 			public void accept(MappingState t) {
 				if (t.mouse != null)
@@ -158,6 +166,8 @@ public class MappingEffect extends Effect {
 		
 		final int pradius = 4;
 		
+		BufferedImage spectrum = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
+		
 		final Comparator<Point2D.Float> xComp1 = new Comparator<Point2D.Float>() {
 			@Override
 			public int compare(Float o1, Float o2) {
@@ -172,9 +182,48 @@ public class MappingEffect extends Effect {
 			}
 		};
 		
-		MappingPanel(Consumer<MappingState> consumer) {
+		MappingPanel(BufferedImage original, Consumer<MappingState> consumer) {
 			setSize(400, 400);
 			setPreferredSize(getSize());
+			
+			int[][] spec = new int[3][256];
+			int[] buffer = ((DataBufferInt) original.getRaster().getDataBuffer()).getData();
+			
+			for (int i = 0; i < buffer.length; i++) {
+				int c = buffer[i];
+				spec[0][(c >> 16) & 0xFF]++;
+				spec[1][(c >> 8) & 0xFF]++;
+				spec[2][c & 0xFF]++;
+			}
+			
+			int highest = 0;
+			
+			for (int c = 0; c < 3; c++)
+				for (int x = 0; x < 256; x++)
+					highest = Math.max(highest, spec[c][x]);
+			
+			for (int c = 0; c < 3; c++)
+				for (int x = 0; x < 256; x++)
+					spec[c][x] = (int) (256 * spec[c][x] / (float) highest);
+			
+			// hardcoded to WebLaf panel background, what is the API?
+			int sr = 237;
+			int sg = 237;
+			int sb = 237;
+			
+			int v = 70;
+			
+			for (int x = 0; x < 256; x++) {
+				for (int y = 255; y >= 0; y--) {
+					boolean cr = spec[0][x]-- > 0;
+					boolean cg = spec[1][x]-- > 0;
+					boolean cb = spec[2][x]-- > 0;
+					int r = sr - (cg ? v : 0) - (cb ? v : 0);
+					int g = sg - (cr ? v : 0) - (cb ? v : 0);
+					int b = sb - (cr ? v : 0) - (cg ? v : 0);
+					spectrum.setRGB(x, y, ColorUtils.pack(r, g, b, 255));
+				}
+			}
 			
 			for (int i = 0; i < mappings.length; i++)
 				for (Point2D.Float p : mappings[i].points)
@@ -197,6 +246,8 @@ public class MappingEffect extends Effect {
 		
 		@Override
 		public void paint(Graphics gg) {
+			gg.drawImage(spectrum, 1, 1, getWidth() - 2, getHeight() - 2, null);
+			
 			Graphics2D g = (Graphics2D) gg;
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			
