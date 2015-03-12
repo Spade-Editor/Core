@@ -54,13 +54,14 @@ public class MappingEffect extends Effect {
 		
 		review.addChangeListener(new ChangeListener() {
 			MappingChange preview;
+			
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				IChange change = layer.getDocument().getPreview();
 				if (change != null && change instanceof MappingChange)
 					preview = (MappingChange) change;
 				
-				layer.getDocument().preview(review.isSelected() ? null: preview);
+				layer.getDocument().preview(review.isSelected() ? null : preview);
 			}
 		});
 		
@@ -151,6 +152,13 @@ public class MappingEffect extends Effect {
 		dialog.getBottomPanel().add(lowerBottom, BorderLayout.SOUTH);
 		
 		dialog.getPanel(0).add(mapping);
+		
+		dialog.getDialog().addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				layer.getDocument().preview(null);
+			}
+		});
 		
 		dialog.display();
 		
