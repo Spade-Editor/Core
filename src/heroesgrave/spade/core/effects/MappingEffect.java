@@ -421,9 +421,9 @@ public class MappingEffect extends Effect {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			fillLookups();
-			fillSpectrum();
 			if (consumer != null)
 				consumer.accept(new MappingState(null, lookups));
+			fillSpectrum(); // do this after accept
 			setActive(e.getPoint());
 			repaint();
 		}
