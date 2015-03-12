@@ -7,6 +7,7 @@ import heroesgrave.spade.gui.dialogs.GridEffectDialog;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;
+import heroesgrave.spade.image.change.IChange;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.misc.Pair;
 
@@ -48,6 +49,21 @@ public class MappingEffect extends Effect {
 				WeblafWrapper.createLabel("Green"),
 				WeblafWrapper.createLabel("Blue") };
 		
+		final JCheckBox review = WeblafWrapper.createCheckBox();
+		JLabel reviewLabel = WeblafWrapper.createLabel("Review");
+		
+		review.addChangeListener(new ChangeListener() {
+			MappingChange preview;
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				IChange change = layer.getDocument().getPreview();
+				if (change != null && change instanceof MappingChange)
+					preview = (MappingChange) change;
+				
+				layer.getDocument().preview(review.isSelected() ? null: preview);
+			}
+		});
+		
 		final MappingPanel mapping = new MappingPanel(new Supplier<RawImage>() {
 			@Override
 			public RawImage get() {
@@ -64,6 +80,7 @@ public class MappingEffect extends Effect {
 				else {
 					dialog.getDialog().setTitle("Mapping");
 					layer.getDocument().preview(new MappingChange(t.mapping));
+					review.setSelected(false);
 				}
 			}
 		});
@@ -124,6 +141,8 @@ public class MappingEffect extends Effect {
 		
 		lowerBottom.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
+		lowerBottom.add(review);
+		lowerBottom.add(reviewLabel);
 		lowerBottom.add(apply);
 		lowerBottom.add(cancel);
 		
