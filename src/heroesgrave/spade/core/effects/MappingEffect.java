@@ -231,13 +231,17 @@ public class MappingEffect extends Effect {
 		}
 		
 		private void fillSpectrum() {
-			int[] buffer = imageSupplier.get().borrowBuffer();
+			RawImage image = imageSupplier.get();
+			int[] buffer = image.borrowBuffer();
+			boolean[] mask = image.borrowMask();
 			
 			for (int i = 0; i < buffer.length; i++) {
-				int c = buffer[i];
-				spectral[0][(c >> 16) & 0xFF]++;
-				spectral[1][(c >> 8) & 0xFF]++;
-				spectral[2][c & 0xFF]++;
+				if (mask == null || mask[i]) {
+					int c = buffer[i];
+					spectral[0][(c >> 16) & 0xFF]++;
+					spectral[1][(c >> 8) & 0xFF]++;
+					spectral[2][c & 0xFF]++;
+				}
 			}
 			
 			int highest = 0;
