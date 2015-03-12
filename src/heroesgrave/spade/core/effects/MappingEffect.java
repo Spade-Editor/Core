@@ -6,22 +6,21 @@ import heroesgrave.spade.gui.colorchooser.ColorUtils;
 import heroesgrave.spade.gui.dialogs.GridEffectDialog;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
+import heroesgrave.spade.image.RawImage;
 import heroesgrave.utils.math.MathUtils;
+import heroesgrave.utils.misc.Pair;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.geom.Point2D.Float;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import heroesgrave.utils.misc.Pair;
 
 /*
  * TODO: generalize to any type of mapping
@@ -49,12 +48,15 @@ public class MappingEffect extends Effect {
 				WeblafWrapper.createLabel("Green"),
 				WeblafWrapper.createLabel("Blue") };
 		
-		BufferedImage original = new BufferedImage(layer.getWidth(), layer.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = original.createGraphics();
-		layer.render(g);
-		g.dispose();
-		
-		final MappingPanel mapping = new MappingPanel(original, new Consumer<MappingState>() {
+		final MappingPanel mapping = new MappingPanel(new Supplier<RawImage>() {
+			@Override
+			public RawImage get() {
+				MappingChange preview = ((MappingChange) layer.getDocument().getPreview());
+				if (preview == null)
+					return layer.getImage();
+				return preview.apply(RawImage.copyOf(layer.getImage()));
+			}
+		}, new Consumer<MappingState>() {
 			@Override
 			public void accept(MappingState t) {
 				if (t.mouse != null)
@@ -156,6 +158,7 @@ public class MappingEffect extends Effect {
 				PiecewiseLinearMapping.identity() };
 		
 		int[][] lookups = new int[mappings.length][256];
+		int[][] spectral = new int[3][256];
 		
 		boolean[] enabled = { true, true, true };
 		
@@ -163,6 +166,7 @@ public class MappingEffect extends Effect {
 		List<Point2D.Float> active = new ArrayList<>();
 		Point2D.Float mouse = new Point2D.Float();
 		Consumer<MappingState> consumer;
+		Supplier<RawImage> imageSupplier;
 		
 		final int pradius = 4;
 		
@@ -182,29 +186,42 @@ public class MappingEffect extends Effect {
 			}
 		};
 		
-		MappingPanel(BufferedImage original, Consumer<MappingState> consumer) {
+		MappingPanel(Supplier<RawImage> imageSupplier, Consumer<MappingState> consumer) {
 			setSize(400, 400);
 			setPreferredSize(getSize());
 			
-			int[][] spec = new int[3][256];
-			int[] buffer = ((DataBufferInt) original.getRaster().getDataBuffer()).getData();
+			for (int i = 0; i < mappings.length; i++)
+				for (Point2D.Float p : mappings[i].points)
+					xFixed.put(p, null);
+			
+			this.imageSupplier = imageSupplier;
+			this.consumer = consumer;
+			
+			fillSpectrum();
+			
+			addMouseListener(this);
+			addMouseMotionListener(this);
+		}
+		
+		private void fillSpectrum() {
+			int[] buffer = imageSupplier.get().borrowBuffer();
 			
 			for (int i = 0; i < buffer.length; i++) {
 				int c = buffer[i];
-				spec[0][(c >> 16) & 0xFF]++;
-				spec[1][(c >> 8) & 0xFF]++;
-				spec[2][c & 0xFF]++;
+				spectral[0][(c >> 16) & 0xFF]++;
+				spectral[1][(c >> 8) & 0xFF]++;
+				spectral[2][c & 0xFF]++;
 			}
 			
 			int highest = 0;
 			
 			for (int c = 0; c < 3; c++)
 				for (int x = 0; x < 256; x++)
-					highest = Math.max(highest, spec[c][x]);
+					highest = Math.max(highest, spectral[c][x]);
 			
 			for (int c = 0; c < 3; c++)
 				for (int x = 0; x < 256; x++)
-					spec[c][x] = (int) (256 * spec[c][x] / (float) highest);
+					spectral[c][x] = (int) (256 * spectral[c][x] / (float) highest);
 			
 			// hardcoded to WebLaf panel background, what is the API?
 			int sr = 237;
@@ -213,26 +230,17 @@ public class MappingEffect extends Effect {
 			
 			int v = 70;
 			
-			for (int x = 0; x < 256; x++) {
-				for (int y = 255; y >= 0; y--) {
-					boolean cr = spec[0][x]-- > 0;
-					boolean cg = spec[1][x]-- > 0;
-					boolean cb = spec[2][x]-- > 0;
-					int r = sr - (cg ? v : 0) - (cb ? v : 0);
-					int g = sg - (cr ? v : 0) - (cb ? v : 0);
-					int b = sb - (cr ? v : 0) - (cg ? v : 0);
-					spectrum.setRGB(x, y, ColorUtils.pack(r, g, b, 255));
+			for (int y = 0; y < 256; y++) {
+				for (int x = 0; x < 256; x++) {
+					int cr = spectral[0][x] >= y ? v : 0;
+					int cg = spectral[1][x] >= y ? v : 0;
+					int cb = spectral[2][x] >= y ? v : 0;
+					int r = sr - cg - cb;
+					int g = sg - cr - cb;
+					int b = sb - cr - cg;
+					spectrum.setRGB(x, 255 - y, ColorUtils.pack(r, g, b, 255));
 				}
 			}
-			
-			for (int i = 0; i < mappings.length; i++)
-				for (Point2D.Float p : mappings[i].points)
-					xFixed.put(p, null);
-			
-			this.consumer = consumer;
-			
-			addMouseListener(this);
-			addMouseMotionListener(this);
 		}
 		
 		private void fillLookups() {
@@ -413,6 +421,7 @@ public class MappingEffect extends Effect {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			fillLookups();
+			fillSpectrum();
 			if (consumer != null)
 				consumer.accept(new MappingState(null, lookups));
 			setActive(e.getPoint());
@@ -474,5 +483,9 @@ public class MappingEffect extends Effect {
 	
 	private static interface Consumer<T> {
 		void accept(T t);
+	}
+	
+	private static interface Supplier<T> {
+		T get();
 	}
 }
