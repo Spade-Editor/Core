@@ -2,12 +2,14 @@ package heroesgrave.spade.core.effects;
 
 import heroesgrave.spade.core.changes.MappingChange;
 import heroesgrave.spade.editing.Effect;
+import heroesgrave.spade.gui.GUIManager;
 import heroesgrave.spade.gui.colorchooser.ColorUtils;
 import heroesgrave.spade.gui.dialogs.GridEffectDialog;
 import heroesgrave.spade.gui.misc.WeblafWrapper;
 import heroesgrave.spade.image.Layer;
 import heroesgrave.spade.image.RawImage;
 import heroesgrave.spade.image.change.IChange;
+import heroesgrave.spade.main.Spade;
 import heroesgrave.utils.math.MathUtils;
 import heroesgrave.utils.misc.Pair;
 
@@ -36,7 +38,7 @@ public class MappingEffect extends Effect {
 	
 	@Override
 	public void perform(final Layer layer) {
-		final GridEffectDialog dialog = new GridEffectDialog(1, 1, "Mapping", getIcon());
+		final GridEffectDialog dialog = new GridEffectDialog(1, 1, "Mapping", new ImageIcon(GUIManager.ICON));
 		
 		JPanel upperBottom = new JPanel(), lowerBottom = new JPanel();
 		
