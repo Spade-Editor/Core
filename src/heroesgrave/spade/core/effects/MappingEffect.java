@@ -142,10 +142,24 @@ public class MappingEffect extends Effect {
 			}
 		});
 		
+		final JCheckBox snap = WeblafWrapper.createCheckBox();
+		JLabel snapLabel = WeblafWrapper.createLabel("Snap");
+		
+		snap.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				mapping.setSnap(snap.isSelected());
+			}
+		});
+		
 		lowerBottom.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		
+		lowerBottom.add(snap);
+		lowerBottom.add(snapLabel);
+		lowerBottom.add(WeblafWrapper.createLabel("  "));
 		lowerBottom.add(review);
 		lowerBottom.add(reviewLabel);
+		lowerBottom.add(WeblafWrapper.createLabel("  "));
 		lowerBottom.add(apply);
 		lowerBottom.add(cancel);
 		
@@ -198,6 +212,7 @@ public class MappingEffect extends Effect {
 		Supplier<RawImage> imageSupplier;
 		
 		final int pradius = 4;
+		boolean snap = false;
 		
 		BufferedImage spectrum = new BufferedImage(256, 256, BufferedImage.TYPE_INT_RGB);
 		
@@ -283,6 +298,11 @@ public class MappingEffect extends Effect {
 				for (int i = 0; i < lookup.length; i++)
 					lookup[i] = (int) (mappings[c].get(i * w) * 255);
 			}
+		}
+		
+		private void setSnap(boolean s) {
+			snap = s;
+			// go through points and snap them?
 		}
 		
 		@Override
@@ -433,6 +453,11 @@ public class MappingEffect extends Effect {
 			p.y = MathUtils.clamp(p.y, 0, getHeight());
 			float tx = p.x / (float) getWidth();
 			float ty = 1 - (p.y / (float) getHeight());
+			
+			if (snap) {
+				tx = (Math.round(tx * 256)) / 256f;
+				ty = (Math.round(ty * 256)) / 256f;
+			}
 			
 			if (!active.isEmpty()) {
 				if (consumer != null) {
