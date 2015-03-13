@@ -22,22 +22,7 @@ package heroesgrave.spade.core;
 
 import heroesgrave.spade.core.blend.AlphaTestReplace;
 import heroesgrave.spade.core.blend.Replace;
-import heroesgrave.spade.core.changes.FillRectChange;
-import heroesgrave.spade.core.changes.FlipHorizChange;
-import heroesgrave.spade.core.changes.FlipVertChange;
-import heroesgrave.spade.core.changes.FloodPathChange;
-import heroesgrave.spade.core.changes.FloodSelectChange;
-import heroesgrave.spade.core.changes.GlobalFloodPathChange;
-import heroesgrave.spade.core.changes.GreyscaleChange;
-import heroesgrave.spade.core.changes.InvertChange;
-import heroesgrave.spade.core.changes.LineChange;
-import heroesgrave.spade.core.changes.MaskRectChange;
-import heroesgrave.spade.core.changes.MoveChange;
-import heroesgrave.spade.core.changes.PixelChange;
-import heroesgrave.spade.core.changes.RectChange;
-import heroesgrave.spade.core.changes.ResizeImageChange;
-import heroesgrave.spade.core.changes.SepiaChange;
-import heroesgrave.spade.core.changes.TrueGreyscaleChange;
+import heroesgrave.spade.core.changes.*;
 import heroesgrave.spade.core.effects.GreyscaleEffect;
 import heroesgrave.spade.core.effects.MappingEffect;
 import heroesgrave.spade.core.exporters.ExporterJPEG;
@@ -92,6 +77,7 @@ public class CorePlugin extends Plugin
 		registrar.registerEffect(new GreyscaleEffect("Greyscale"), 'G');
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Invert Colour", InvertChange.instance), 'I');
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Sepia", SepiaChange.instance), null);
+		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "EdgeDetect", SobelChange.instance), null);
 		registrar.registerEffect(new MappingEffect("Mapping"), 'M');
 		
 		registrar.registerSerialiser(LineChange.class);
