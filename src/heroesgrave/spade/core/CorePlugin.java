@@ -24,6 +24,7 @@ import heroesgrave.spade.core.blend.AlphaTestReplace;
 import heroesgrave.spade.core.blend.Replace;
 import heroesgrave.spade.core.changes.*;
 import heroesgrave.spade.core.effects.GreyscaleEffect;
+import heroesgrave.spade.core.effects.MappingEffect;
 import heroesgrave.spade.core.exporters.ExporterJPEG;
 import heroesgrave.spade.core.exporters.ExporterORA;
 import heroesgrave.spade.core.exporters.ExporterSPD;
@@ -77,7 +78,7 @@ public class CorePlugin extends Plugin
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Invert Colour", InvertChange.instance), 'I');
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "Sepia", SepiaChange.instance), null);
 		registrar.registerEffect(new SimpleEffect(CorePlugin.class, "EdgeDetect", SobelChange.instance), null);
-		
+		registrar.registerEffect(new MappingEffect("Mapping"), 'M');
 		
 		registrar.registerSerialiser(LineChange.class);
 		registrar.registerSerialiser(RectChange.class);
